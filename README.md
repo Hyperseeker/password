@@ -28,6 +28,6 @@ There's no score. Play and start over for as long as you like. Quit when you've 
 
 MIT
 
-`password` uses `tock`, a timer JS library, licensed under MIT. [`tock`](https://github.com/mrchimp/tock) (c) 2014 [Jacob Gully](https://github.com/mrchimp)
+`password` uses tock, a timer JS library, licensed under MIT. [tock](https://github.com/mrchimp/tock) (c) 2014 [Jacob Gully](https://github.com/mrchimp)
 
 `password` uses Inter, licensed under SIL Open Font License 1.1. [Inter](https://github.com/rsms/inter) (c) 2016-2019 The Inter Project Authors (me@rsms.me).
