@@ -11,7 +11,7 @@ let Password = {
 		"R", "S", "T", "V", "W", "X", "Y", "Z"
 	],
 
-	solved () { return Password.current.every(cell => cell.solved) },
+	solved () { return Password.current.every(key => key.solved) },
 
 	generate () {
 
@@ -135,7 +135,7 @@ let Game = {
 let $countdown = document.querySelector(".countdown"),
 	$main      = document.querySelector("main");
 
-let listener = function (event) {
+let KeyHandler = function (event) {
 
 	let key = event.key.toUpperCase();
 
@@ -159,6 +159,6 @@ let listener = function (event) {
 
 };
 
-window.addEventListener("keypress", listener);
+window.addEventListener("keypress", KeyHandler);
 
 document.addEventListener("DOMContentLoaded", Game.initialize);
