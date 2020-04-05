@@ -100,7 +100,7 @@ let Game = {
 
 		let width = Math.max(percentage, 0);
 
-		$countdown.setAttribute("style", `width: ${width}%;`);
+		$countdown.style.width = `${width}%`;
 
 	},
 
