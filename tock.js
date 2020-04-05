@@ -14,34 +14,34 @@
 */
 function _tick () {
 	
-	this.time += this.interval;
+	this.time.current += this.interval;
 	
-	if (this.countdown && this.duration - this.time < 0) {
+	if (this.countdown && this.duration - this.time.current < 0) {
 		
-		this.timeEnded = 0;
-		this.continue = false;
+		this.time.ended = 0;
+		this.continue   = false;
 		
-		this.callback(this);
+		this.callback();
 		
 		clearTimeout(this.timeout);
 		
-		this.complete(this);
+		this.complete();
 		
 		return;
 		
 	} else {
 		
-		this.callback(this);
+		this.callback();
 		
 	}
 	
-	var diff              = _delta(this.timeStarted) - this.time,
-		untilNextInterval = Math.max(this.interval - diff, this.interval);
+	var diff              = _delta(this.time.started) - this.time.current,
+		untilNextInterval = this.interval - Math.max(diff, 0);
 	
 	if (untilNextInterval <= 0) {
 		
-		this.ticksMissed = Math.floor(Math.abs(untilNextInterval) / this.interval);
-		this.time       += this.ticksMissed * this.interval;
+		this.ticksMissed   = Math.floor(Math.abs(untilNextInterval) / this.interval);
+		this.time.current += this.ticksMissed * this.interval;
 		
 		if (this.continue) this._tick();
 		
@@ -53,21 +53,20 @@ function _tick () {
 	
 };
 
-function _delta (source) { return Date.now() - source };
+function _delta (source = 0) { return Date.now() - source };
 
 /**
 * Called by Tock internally - use start() instead
 */
 function _startCountdown (duration) {
 	
-	this.duration    = duration;
-	this.timeStarted = Date.now();
-	this.time        = 0;
+	this.duration     = duration;
+	this.time.started = Date.now();
+	this.time.current = 0;
 	
-	this.continue    = true;
+	this.continue     = true;
 	
 	this._tick();
-	
 	
 }
 
@@ -76,10 +75,10 @@ function _startCountdown (duration) {
 */
 function _startTimer (offset) {
 	
-	this.timeStarted = offset || Date.now();
-	this.time        = 0;
+	this.time.started = offset || Date.now();
+	this.time.current = 0;
 	
-	this.continue    = true;
+	this.continue     = true;
 	
 	this._tick();
 	
@@ -95,14 +94,21 @@ var Tock = function (options) {
 		timeout:     null,
 		ticksMissed: null,
 		
-		interval: 100,
+		interval:  100,
+
+		time: {
+
+			current: 0,
+
+			started: 0,
+			paused:  0,
+			ended:   0,
+
+			base:    0
+
+		},
 		
-		time:       0,
-		timeStart:  0,
-		timePause:  0,
-		timeFinal:  0,
-		
-		duration:   0,
+		duration:    0,
 		
 		callback () {},
 		complete () {}
@@ -130,7 +136,17 @@ Tock.prototype.reset = function () {
 	if (this.countdown) return false;
 	
 	this.stop();
-	this.timeStarted = this.time = 0;
+	this.time.started = this.time.current = 0;
+	
+};
+
+/**
+* Restart (stop → start) the clock
+*/
+Tock.prototype.restart = function () {
+	
+	this.stop();
+	this.start(this.time.base);
 	
 };
 
@@ -142,8 +158,10 @@ Tock.prototype.start = function (time = 0) {
 	
 	if (this.continue) return false;
 	
-	this.timeStarted = time;
-	this.timePaused  = 0;
+	this.time.started = this.time.base = time;
+	this.time.paused  = 0;
+
+	console.log(this.time);
 	
 	this.countdown
 			? this._startCountdown(time)
@@ -156,14 +174,14 @@ Tock.prototype.start = function (time = 0) {
 */
 Tock.prototype.stop = function () {
 	
-	this.timePaused = this.left();
-	this.continue   = false;
+	this.time.paused = this.left();
+	this.continue    = false;
 	
 	clearTimeout(this.timeout);
 	
-	this.timeEnded = this.countdown
-							? this.duration - this.time
-							: _delta(this.timeStarted);
+	this.time.ended = this.countdown
+							? this.duration - this.time.current
+							: _delta(this.time.started);
 	
 };
 
@@ -174,20 +192,20 @@ Tock.prototype.pause = function () {
 	
 	if (this.continue) {
 		
-		this.timePaused = this.left();
+		this.time.paused = this.left();
 		this.stop();
 		
 		return;
 		
 	};
 	
-	if (this.timePaused) {
+	if (this.time.paused) {
 		
 		this.countdown
-			? this._startCountdown(this.timePaused)
-			: this._startTimer(_delta(this.timePaused));
+				? this._startCountdown(this.time.paused)
+				: this._startTimer(_delta(this.time.paused));
 		
-		this.timePaused = 0;
+		this.time.paused = 0;
 		
 	}
 	
@@ -200,9 +218,9 @@ Tock.prototype.pause = function () {
 */
 Tock.prototype.left = function () {
 	
-	if (!this.continue) return this.timePaused || this.timeEnded;
+	if (!this.continue) return this.time.paused || this.time.ended;
 	
-	let now  = _delta(this.timeStarted),
+	let now  = _delta(this.time.started),
 		left = this.countdown ? this.duration - now : now;
 	
 	return left;
