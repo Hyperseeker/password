@@ -130,6 +130,7 @@ let Game = {
 
 let $countdown = document.querySelector(".countdown"),
 	$main      = document.querySelector("main");
+
 let listener = function (event) {
 
 	let key = event.key.toUpperCase();
