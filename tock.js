@@ -227,12 +227,7 @@ Tock.prototype.left = function () {
 
 Tock.prototype.reduce = function (value) {
 
-	console.log("before reduction", this.time.current);
-
 	// TODO: safe `.reduce`
-	//    *  if `this.time.current` < 0 after being reduced, clear timer
-	this.time.current += value;
-
-	console.log("after reduction",  this.time.current);
+	this.duration -= value;
 
 };

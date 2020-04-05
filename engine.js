@@ -127,7 +127,9 @@ let Game = {
 
 		$main.classList.add("failed");
 
-	}
+	},
+	
+	save () {}
 
 };
 
@@ -148,8 +150,17 @@ let KeyHandler = function (event) {
 
 	let cell = Password.current.find(cell => cell.key == key);
 
-	if (!cell || cell.solved) return;
-
+	if (!cell) {
+		
+		Game.timer.reduce(500);
+		Game.tick();
+		
+		return;
+		
+	}
+	
+	if (cell.solved) return;
+	
 	cell.solved = true;
 
 	Password.negotiate(cell.key);
@@ -158,6 +169,10 @@ let KeyHandler = function (event) {
 
 };
 
+let DOMNegotiator = function () {};
+
 window.addEventListener("keypress", KeyHandler);
 
 document.addEventListener("DOMContentLoaded", Game.initialize);
+
+document.addEventListener("beforeunload", Game.save);
