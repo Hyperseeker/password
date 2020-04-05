@@ -11,14 +11,14 @@ let Password = {
 		"R", "S", "T", "V", "W", "X", "Y", "Z"
 	],
 
-	solved () { return Password.current.every(cell => cell.solved) },
-
-	tuple: [],
+	solved () { return Password.current.every(key => key.solved) },
 
 	generate () {
 
 		let left = Password.length,
 			used = [],
+
+			cells = [...document.querySelectorAll("main .cell")],
 
 			pick = function () {
 
@@ -26,23 +26,27 @@ let Password = {
 
 				while (key.belongsTo(used)) key = Password.alphabet.pick();
 	
-				used.push(key);
+				used.last = key;
 
 				return key;
 
 			};
 		
-		while (left--) Password.current.last = { key: pick(), solved: false };
-
-		Password.tuple = Array.zip([...document.querySelectorAll(".cell")], Password.current);
+		while (left) Password.current.last = {
+			
+			key:    pick(),
+			cell:   cells[Password.length - left--],
+			solved: false
+		
+		};
 
 	},
 
 	reset () {
 
-		for ([element, cell] of Password.tuple) element.classList.remove("solved");
+		for (key of Password.current) key.cell.classList.remove("solved");
 
-		Game.$main.classList.remove("failed");
+		$main.classList.remove("failed");
 
 		Game.status = "ongoing";
 		
@@ -58,22 +62,21 @@ let Password = {
 
 		Password.render();
 
-		Game.timer.stop();
-		Game.timer.start(Game.difficulty);
+		Game.timer.time.base ? Game.timer.restart() : Game.timer.start(Game.difficulty);
 
 	},
 
 	render () {
 		
-		for ([element, cell] of Password.tuple) element.dataset.key = cell.key;
+		for (key of Password.current) key.cell.textContent = key.key;
 
 	},
 
-	negotiate (key) {
+	negotiate (target) {
 
-		let [element, cell] = Password.tuple.find(pair => pair.last.key == key);
+		let cell = Password.current.find(key => key.key == target).cell;
 
-		element.classList.add("solved");
+		cell.classList.add("solved");
 
 	}
 
@@ -85,21 +88,36 @@ let Game = {
 
 	timer: null,
 
-	$countdown: document.querySelector(".countdown"),
-	$main:      document.querySelector("main"),
-
 	difficulty: 5000,
 
-	adjustCountdown () {
 
-		let elapsed    = Game.timer.lap(),
+	tick () {
+
+		let elapsed    = Game.timer.left(),
 			total      = Game.difficulty,
 
-			percentage = (elapsed / total) * 100;
+			percentage = (elapsed / total) * 100,
+			
+			width      = Math.max(percentage, 0);
 
-		let width = Math.max(percentage, 0);
+		$countdown.style.width = `${width}%`;
 
-		Game.$countdown.setAttribute("style", `width: ${width}%;`);
+	},
+
+	initialize () {
+
+		let options = {
+
+			countdown: true,
+
+			callback: Game.tick,
+			complete: Game.lose
+
+		};
+
+		Game.timer = new Tock(options);
+	
+		Password.resolve();
 
 	},
 
@@ -107,13 +125,16 @@ let Game = {
 
 		Game.status = "lost";
 
-		Game.$main.classList.add("failed");
+		$main.classList.add("failed");
 
 	}
 
 };
 
-let listener = function (event) {
+let $countdown = document.querySelector(".countdown"),
+	$main      = document.querySelector("main");
+
+let KeyHandler = function (event) {
 
 	let key = event.key.toUpperCase();
 
@@ -125,7 +146,7 @@ let listener = function (event) {
 
 	};
 
-	let cell = Password.current.filter(cell => cell.key == key).first;
+	let cell = Password.current.find(cell => cell.key == key);
 
 	if (!cell || cell.solved) return;
 
@@ -137,19 +158,6 @@ let listener = function (event) {
 
 };
 
-let initialize = function () {
+window.addEventListener("keypress", KeyHandler);
 
-	Game.timer = new Tock({
-		countdown: true,
-		interval: 100,
-		callback: Game.adjustCountdown,
-		complete: Game.lose
-	});
-
-	Password.resolve();
-
-};
-
-window.addEventListener("keypress", listener);
-
-document.addEventListener("DOMContentLoaded", initialize);
+document.addEventListener("DOMContentLoaded", Game.initialize);

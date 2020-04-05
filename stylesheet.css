@@ -92,39 +92,33 @@ main.failed .cell:not(.solved) { color: var(--countdown); }
 
 footer {
 
-	display: none;
-
 	position: absolute;
 	bottom:   12%;
 
 	font-size: 1.25em;
-	color: white;
+	color:   white;
+
+	opacity: 0;
+	pointer-events: none;
+
+	transition: 0.33s all;
 
 }
 
-footer .cell-like {
-
-	display: inline-block;
-
-	margin: 0 0.175em;
-	padding: 0.25em 0.33em;
-
-	border: 2px solid currentColor;
-
-	background-color: var(--theme-opaque);
-
-	font-size: 1.75em;
-	color: var(--theme);
-
-	transform: translateY(0.125em);
+main.failed + footer {
+	
+	opacity: 1;
+	pointer-events: initial;
 
 }
-
-main.failed + footer { display: block; }
 
 /*  # CELL  */
 
 .cell {
+
+	display:         flex;
+	justify-content: center;
+	align-items:     center;
 
 	position: relative;
 
@@ -135,6 +129,8 @@ main.failed + footer { display: block; }
 
 	font-size: 2em;
 	color: var(--theme);
+
+	transition: 0.1s all;
 
 }
 
@@ -157,17 +153,5 @@ main.failed + footer { display: block; }
 	box-shadow: 0 0 8px;
 
 	opacity: 0.2;
-
-}
-
-.cell::after {
-
-	content: attr(data-key);
-
-	position: absolute;
-	top:      50%;
-	left:     50%;
-
-	transform: translate(-50%, -50%);
 
 }

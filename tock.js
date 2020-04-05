@@ -4,308 +4,235 @@
 *    sitepoint.com/creating-accurate-timers-in-javascript/
 */
 
+/**
+* Modified by Firebrand for use in `password`: https://github.com/FirebrandCoding/password
+*/
 
+/**
+* Called every tick for countdown clocks.
+* i.e. once every this.interval ms
+*/
+function _tick () {
+	
+	this.time.current += this.interval;
+	
+	if (this.countdown && this.duration - this.time.current < 0) {
+		
+		this.time.ended = 0;
+		this.running    = false;
+		
+		this.callback();
+		
+		clearTimeout(this.timeout);
+		
+		this.complete();
+		
+		return;
+		
+	} else {
+		
+		this.callback();
+		
+	}
+	
+	var diff              = _delta(this.time.started) - this.time.current,
+		untilNextInterval = this.interval - Math.max(diff, 0);
+	
+	if (untilNextInterval <= 0) {
+		
+		this.ticksMissed   = Math.floor(Math.abs(untilNextInterval) / this.interval);
+		this.time.current += this.ticksMissed * this.interval;
+		
+		if (this.running) this._tick();
+		
+	} else if (this.running) {
+		
+		this.timeout = setTimeout(this._tick.bind(this), untilNextInterval);
+		
+	};
+	
+};
 
-  /**
-   * Called every tick for countdown clocks.
-   * i.e. once every this.interval ms
-   */
-  function _tick () {
-    this.time += this.interval;
+function _delta (source = 0) { return Date.now() - source };
 
-    if ( this.countdown && (this.duration_ms - this.time < 0) ) {
-      this.final_time = 0;
-      this.go = false;
-      this.callback(this);
-      clearTimeout(this.timeout);
-      this.complete(this);
-      return;
-    } else {
-      this.callback(this);
-    }
+/**
+* Called by Tock internally - use start() instead
+*/
+function _startCountdown (duration) {
+	
+	this.duration     = duration;
+	this.time.started = Date.now();
+	this.time.current = 0;
+	
+	this.running      = true;
+	
+	this._tick();
+	
+}
 
-    var diff = (Date.now() - this.start_time) - this.time,
-        next_interval_in = diff > 0 ? this.interval - diff : this.interval;
+/**
+* Called by Tock internally - use start() instead
+*/
+function _startTimer (offset) {
+	
+	this.time.started = offset || Date.now();
+	this.time.current = 0;
+	
+	this.running      = true;
+	
+	this._tick();
+	
+}
 
-    if ( next_interval_in <= 0 ) {
-      this.missed_ticks = Math.floor(Math.abs(next_interval_in) / this.interval);
-      this.time += this.missed_ticks * this.interval;
+var Tock = function (options) {
+	
+	let defaults = {
+		
+		running:    false,
+		countdown:  false,
+		
+		timeout:     null,
+		ticksMissed: null,
+		
+		interval:     100,
 
-      if ( this.go ) {
-        _tick.call(this);
-      }
-    } else if ( this.go ) {
-      this.timeout = setTimeout(_tick.bind(this), next_interval_in);
-    }
-  }
+		time: {
 
-  /**
-   * Called by Tock internally - use start() instead
-   */
-  function _startCountdown (duration) {
-    this.duration_ms = duration;
-    this.start_time = Date.now();
-    this.time = 0;
-    this.go = true;
-    _tick.call(this);
-  }
+			current:    0,
 
-  /**
-   * Called by Tock internally - use start() instead
-   */
-  function _startTimer (start_offset) {
-    this.start_time = start_offset || Date.now();
-    this.time = 0;
-    this.go = true;
-    _tick.call(this);
-  }
+			started:    0,
+			paused:     0,
+			ended:      0,
 
-  var MILLISECONDS_RE           = /^\s*(\+|-)?\d+\s*$/,
-      MM_SS_RE                  = /^(\d{1,2}):(\d{2})$/,
-      MM_SS_ms_OR_HH_MM_SS_RE   = /^(\d{1,2}):(\d{2})(?::|\.)(\d{2,3})$/,
-      MS_PER_HOUR               = 3600000,
-      MS_PER_MIN                = 60000,
-      MS_PER_SEC                = 1000,
-      /* The RegExp below will match a date in format `yyyy-mm-dd HH:MM:SS` and optionally with `.ms` at the end.
-       * It will also match ISO date string, i.e. if the whitespace separator in the middle is replaced with a `T`
-       * and the date string is also suffixed with a `Z` denoting UTC timezone.
-       */
-      yyyy_mm_dd_HH_MM_SS_ms_RE = /^(\d{4})-([0-1]\d)-([0-3]\d)(?:\s|T)(\d{2}):(\d{2}):(\d{2})(?:\.(\d{3})Z?)?$/;
+			base:       0
 
-  var Tock = function (options) {
-    options = options || {};
+		},
+		
+		duration:       0,
+		
+		callback    () {},
+		complete    () {}
+		
+	};
 
-    if ( ! (this instanceof Tock) ) return new Tock(options);
+	let result = Object.assign(defaults, options);
+	
+	Object.assign(this, result);
+	
+	if (!this instanceof Tock) return new Tock(options);
+	
+};
 
-    Tock.instances = (Tock.instances || 0) + 1;
+Tock.prototype._tick           = _tick;
+Tock.prototype._startCountdown = _startCountdown;
+Tock.prototype._startTimer     = _startTimer;
+Tock.prototype._delta          = _delta;
 
-    this.go           = false;
-    this.timeout      = null;
-    this.missed_ticks = null;
-    this.interval     = options.interval || 10;
-    this.countdown    = options.countdown || false;
-    this.start_time   = 0;
-    this.pause_time   = 0;
-    this.final_time   = 0;
-    this.duration_ms  = 0;
-    this.time         = 0;
-    this.callback     = options.callback || function () {};
-    this.complete     = options.complete || function () {};
-  };
+/**
+* Reset the clock
+*/
+Tock.prototype.reset = function () {
+	
+	if (this.countdown) return false;
+	
+	this.stop();
+	this.time.started = this.time.current = 0;
+	
+};
 
-  /**
-   * Reset the clock
-   */
-  Tock.prototype.reset = function () {
-    if ( this.countdown ) {
-      return false;
-    }
+/**
+* Restart (stop → start) the clock
+*/
+Tock.prototype.restart = function () {
+	
+	this.stop();
+	this.start(this.time.base);
+	
+};
 
-    this.stop();
-    this.start_time = 0;
-    this.time = 0;
-  };
+/**
+* Start the clock.
+* @param {Various} time Accepts a single "time" argument in ms
+*/
+Tock.prototype.start = function (time = 0) {
+	
+	if (this.running) return false;
+	
+	this.time.started = this.time.base = time;
+	this.time.paused  = 0;
 
-  /**
-   * Start the clock.
-   * @param {Various} time Accepts a single "time" argument
-   *   which can be in various forms:
-   *   - MM:SS
-   *   - MM:SS:ms or MM:SS.ms
-   *   - HH:MM:SS
-   *   - yyyy-mm-dd HH:MM:SS.ms
-   *   - milliseconds
-   */
-  Tock.prototype.start = function (time) {
-    if (this.go) return false;
+	this.countdown
+			? this._startCountdown(time)
+			: this._startTimer(_delta(time));
+	
+};
 
-    time = time ? this.timeToMS(time) : 0;
+/**
+* Stop the clock and clear the timeout
+*/
+Tock.prototype.stop = function () {
+	
+	this.time.paused = this.left();
+	this.running     = false;
+	
+	clearTimeout(this.timeout);
+	
+	this.time.ended = this.countdown
+							? this.duration - this.time.current
+							: _delta(this.time.started);
+	
+};
 
-    this.start_time = time;
-    this.pause_time = 0;
+/**
+* Stop/start the clock.
+*/
+Tock.prototype.pause = function () {
+	
+	if (this.running) {
+		
+		this.time.paused = this.left();
+		this.stop();
+		
+		return;
+		
+	};
+	
+	if (this.time.paused) {
+		
+		this.countdown
+				? this._startCountdown(this.time.paused)
+				: this._startTimer(_delta(this.time.paused));
+		
+		this.time.paused = 0;
+		
+	}
+	
+};
 
-    if ( this.countdown ) {
-      _startCountdown.call(this, time);
-    } else {
-      _startTimer.call(this, Date.now() - time);
-    }
-  };
+/**
+* Get the current clock time in ms.
+* Use with Tock.msToTime() to make it look nice.
+* @return {Integer} Number of milliseconds ellapsed/remaining
+*/
+Tock.prototype.left = function () {
+	
+	if (!this.running) return this.time.paused || this.time.ended;
+	
+	let now  = _delta(this.time.started),
+		left = this.countdown ? this.duration - now : now;
+	
+	return left;
+	
+};
 
-  /**
-   * Stop the clock and clear the timeout
-   */
-  Tock.prototype.stop = function () {
-    this.pause_time = this.lap();
-    this.go = false;
+Tock.prototype.reduce = function (value) {
 
-    clearTimeout(this.timeout);
+	console.log("before reduction", this.time.current);
 
-    if ( this.countdown ) {
-      this.final_time = this.duration_ms - this.time;
-    } else {
-      this.final_time = (Date.now() - this.start_time);
-    }
-  };
+	// TODO: safe `.reduce`
+	//    *  if `this.time.current` < 0 after being reduced, clear timer
+	this.time.current += value;
 
-  /**
-   * Stop/start the clock.
-   */
-  Tock.prototype.pause = function () {
-    if ( this.go ) {
-      this.pause_time = this.lap();
-      this.stop();
-    } else {
-      if ( this.pause_time ) {
-        if ( this.countdown ) {
-          _startCountdown.call(this, this.pause_time);
-        } else {
-          _startTimer.call(this, Date.now() - this.pause_time);
-        }
+	console.log("after reduction",  this.time.current);
 
-        this.pause_time = 0;
-      }
-    }
-  };
-
-  /**
-   * Get the current clock time in ms.
-   * Use with Tock.msToTime() to make it look nice.
-   * @return {Integer} Number of milliseconds ellapsed/remaining
-   */
-  Tock.prototype.lap = function () {
-    if ( this.go ) {
-      var now;
-
-      if ( this.countdown ) {
-        now = this.duration_ms - (Date.now() - this.start_time);
-      } else {
-        now = (Date.now() - this.start_time);
-      }
-
-      return now;
-    }
-
-    return this.pause_time || this.final_time;
-  };
-
-  /**
-   * Format milliseconds as a MM:SS.ms string.
-   * @param  {Integer} ms Number of milliseconds
-   * @return {String}     String representation of ms in format MM:SS:ms
-   */
-  Tock.prototype.msToTime = function (ms) {
-    var milliseconds = this.zeroPad(ms % MS_PER_SEC, 3),
-        seconds = this.zeroPad(Math.floor((ms / MS_PER_SEC) % 60), 2),
-        minutes = this.zeroPad(Math.floor((ms / (MS_PER_MIN)) % 60), 2);
-
-    return minutes + ':' + seconds + '.' + milliseconds;
-  };
-
-  /**
-   * Pad the left side of a string with zeros up to a given length. I
-   * considered using an NPM package for this but it's probably best not to.
-   * @param  {Various} input  Number to pad. Will be converted to string.
-   * @param  {Integer} length Desired string length
-   * @return {String}         Padding number
-   */
-  Tock.prototype.zeroPad = function (input, length) {
-    input = input.toString();
-
-    while ( input.length < length ) {
-      input = '0' + input;
-    }
-
-    return input;
-  };
-
-  /**
-   * Format milliseconds as HH:MM:SS or HH:MM:SS:mmm
-   * @param  {Integer} ms      Number of milliseconds
-   * @param  {Boolean} show_ms If true, include milliseconds in output
-   * @return {String}          Formatted timecode string
-   */
-  Tock.prototype.msToTimecode = function (ms, show_ms) {
-    var seconds  = this.zeroPad(Math.floor((ms / MS_PER_SEC) % 60), 2),
-        minutes  = this.zeroPad(Math.floor((ms / MS_PER_MIN) % 60), 2),
-        hours    = this.zeroPad(Math.floor((ms / MS_PER_HOUR)), 2),
-        millisec = (show_ms ? ':' + this.zeroPad(Math.floor(ms % MS_PER_SEC), 3) : '');
-
-    return hours + ':' + minutes + ':' + seconds + millisec;
-  };
-
-  /**
-   * Convert a time string to milliseconds
-   *
-   * Possible inputs:
-   * MM:SS
-   * MM:SS:ms or MM:SS.ms
-   * HH:MM:SS
-   * yyyy-mm-dd HH:MM:SS.ms
-   *
-   * A milliseconds input will return it back for safety
-   * If the input cannot be recognized then 0 is returned
-   */
-  Tock.prototype.timeToMS = function (time) {
-    // If input is milliseconds integer then return it back
-    if ( MILLISECONDS_RE.test(String(time)) ) {
-      return time;
-    }
-
-    var ms,
-        time_split,
-        match,
-        date,
-        now = new Date();
-
-    if ( MM_SS_RE.test(time) ) { // If MM:SS
-      time_split = time.split(':');
-      ms = parseInt(time_split[0], 10) * MS_PER_MIN;
-      ms += parseInt(time_split[1], 10) * MS_PER_SEC;
-    } else {
-      match = time.match(MM_SS_ms_OR_HH_MM_SS_RE);
-
-      if ( match ) {
-        if ( match[3].length == 3 || parseInt(match[3], 10) > 59 ) { // If MM:SS:ms or MM:SS.ms (e.g. 10:10:458 or 10:10.458)
-          ms = parseInt(match[1], 10) * MS_PER_MIN;
-          ms += parseInt(match[2], 10) * MS_PER_SEC;
-          ms += parseInt(match[3], 10);
-        } else { // Then it's HH:MM:SS
-          ms = parseInt(match[1], 10) * MS_PER_HOUR;
-          ms += parseInt(match[2], 10) * MS_PER_MIN;
-          ms += parseInt(match[3], 10) * MS_PER_SEC;
-        }
-      } else if ( yyyy_mm_dd_HH_MM_SS_ms_RE.test(time) ) { // If yyyy-mm-dd HH:MM:SS or yyyy-mm-dd HH:MM:SS.ms or yyyy-mm-ddTHH:MM:SS.msZ
-        date = new Date();
-        now = new Date();
-
-        match = time.match(yyyy_mm_dd_HH_MM_SS_ms_RE);
-
-        date.setYear(match[1]);
-        date.setMonth(match[2]);
-        date.setDate(match[3]);
-        date.setHours(match[4]);
-        date.setMinutes(match[5]);
-        date.setSeconds(match[6]);
-
-        if (typeof match[7] !== 'undefined') {
-          date.setMilliseconds(match[7]);
-        }
-
-        ms = Math.max(0, date.getTime() - now.getTime());
-      } else {
-        // Let's try it as a date string
-        now = new Date();
-        ms = Date.parse(time);
-
-        if ( !isNaN(ms) ) { // Looks ok
-          ms = Math.max(0, ms - now.getTime());
-        } else { // Could not recognize input, so start from 0
-          ms = 0;
-        }
-      }
-    }
-
-    return ms;
-  };
-
-  // return Tock;
+};
