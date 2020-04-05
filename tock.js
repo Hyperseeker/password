@@ -19,7 +19,7 @@ function _tick () {
 	if (this.countdown && this.duration - this.time.current < 0) {
 		
 		this.time.ended = 0;
-		this.continue   = false;
+		this.running    = false;
 		
 		this.callback();
 		
@@ -43,9 +43,9 @@ function _tick () {
 		this.ticksMissed   = Math.floor(Math.abs(untilNextInterval) / this.interval);
 		this.time.current += this.ticksMissed * this.interval;
 		
-		if (this.continue) this._tick();
+		if (this.running) this._tick();
 		
-	} else if (this.continue) {
+	} else if (this.running) {
 		
 		this.timeout = setTimeout(this._tick.bind(this), untilNextInterval);
 		
@@ -64,7 +64,7 @@ function _startCountdown (duration) {
 	this.time.started = Date.now();
 	this.time.current = 0;
 	
-	this.continue     = true;
+	this.running      = true;
 	
 	this._tick();
 	
@@ -78,7 +78,7 @@ function _startTimer (offset) {
 	this.time.started = offset || Date.now();
 	this.time.current = 0;
 	
-	this.continue     = true;
+	this.running      = true;
 	
 	this._tick();
 	
@@ -88,30 +88,30 @@ var Tock = function (options) {
 	
 	let defaults = {
 		
-		continue:  false,
-		countdown: false,
+		running:    false,
+		countdown:  false,
 		
 		timeout:     null,
 		ticksMissed: null,
 		
-		interval:  100,
+		interval:     100,
 
 		time: {
 
-			current: 0,
+			current:    0,
 
-			started: 0,
-			paused:  0,
-			ended:   0,
+			started:    0,
+			paused:     0,
+			ended:      0,
 
-			base:    0
+			base:       0
 
 		},
 		
-		duration:    0,
+		duration:       0,
 		
-		callback () {},
-		complete () {}
+		callback    () {},
+		complete    () {}
 		
 	};
 
@@ -156,13 +156,11 @@ Tock.prototype.restart = function () {
 */
 Tock.prototype.start = function (time = 0) {
 	
-	if (this.continue) return false;
+	if (this.running) return false;
 	
 	this.time.started = this.time.base = time;
 	this.time.paused  = 0;
 
-	console.log(this.time);
-	
 	this.countdown
 			? this._startCountdown(time)
 			: this._startTimer(_delta(time));
@@ -175,7 +173,7 @@ Tock.prototype.start = function (time = 0) {
 Tock.prototype.stop = function () {
 	
 	this.time.paused = this.left();
-	this.continue    = false;
+	this.running     = false;
 	
 	clearTimeout(this.timeout);
 	
@@ -190,7 +188,7 @@ Tock.prototype.stop = function () {
 */
 Tock.prototype.pause = function () {
 	
-	if (this.continue) {
+	if (this.running) {
 		
 		this.time.paused = this.left();
 		this.stop();
@@ -218,11 +216,23 @@ Tock.prototype.pause = function () {
 */
 Tock.prototype.left = function () {
 	
-	if (!this.continue) return this.time.paused || this.time.ended;
+	if (!this.running) return this.time.paused || this.time.ended;
 	
 	let now  = _delta(this.time.started),
 		left = this.countdown ? this.duration - now : now;
 	
 	return left;
 	
+};
+
+Tock.prototype.reduce = function (value) {
+
+	console.log("before reduction", this.time.current);
+
+	// TODO: safe `.reduce`
+	//    *  if `this.time.current` < 0 after being reduced, clear timer
+	this.time.current += value;
+
+	console.log("after reduction",  this.time.current);
+
 };
