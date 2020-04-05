@@ -13,12 +13,12 @@ let Password = {
 
 	solved () { return Password.current.every(cell => cell.solved) },
 
-	tuple: [],
-
 	generate () {
 
 		let left = Password.length,
 			used = [],
+
+			cells = [...document.querySelectorAll(".cell")],
 
 			pick = function () {
 
@@ -26,21 +26,25 @@ let Password = {
 
 				while (key.belongsTo(used)) key = Password.alphabet.pick();
 	
-				used.push(key);
+				used.last = key;
 
 				return key;
 
 			};
 		
-		while (left--) Password.current.last = { key: pick(), solved: false };
-
-		Password.tuple = Array.zip([...document.querySelectorAll(".cell")], Password.current);
+		while (left) Password.current.last = {
+			
+			key:    pick(),
+			cell:   cells[Password.length - left--],
+			solved: false
+		
+		};
 
 	},
 
 	reset () {
 
-		for ([element, cell] of Password.tuple) element.classList.remove("solved");
+		for (key of Password.current) key.cell.classList.remove("solved");
 
 		$main.classList.remove("failed");
 
@@ -65,15 +69,15 @@ let Password = {
 
 	render () {
 		
-		for ([element, cell] of Password.tuple) element.dataset.key = cell.key;
+		for (key of Password.current) key.cell.dataset.key = key.key;
 
 	},
 
-	negotiate (key) {
+	negotiate (target) {
 
-		let [element, cell] = Password.tuple.find(pair => pair.last.key == key);
+		let cell = Password.current.find(key => key.key == target).cell;
 
-		element.classList.add("solved");
+		cell.classList.add("solved");
 
 	}
 
