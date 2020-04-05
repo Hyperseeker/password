@@ -100,6 +100,20 @@ let Game = {
 		let width = Math.max(percentage, 0);
 
 		Game.$countdown.setAttribute("style", `width: ${width}%;`);
+	initialize () {
+
+		let options = {
+
+			countdown: true,
+
+			callback: Game.tick,
+			complete: Game.lose
+
+		};
+
+		Game.timer = new Tock(options);
+	
+		Password.resolve();
 
 	},
 
@@ -137,19 +151,6 @@ let listener = function (event) {
 
 };
 
-let initialize = function () {
-
-	Game.timer = new Tock({
-		countdown: true,
-		interval: 100,
-		callback: Game.adjustCountdown,
-		complete: Game.lose
-	});
-
-	Password.resolve();
-
-};
-
 window.addEventListener("keypress", listener);
 
-document.addEventListener("DOMContentLoaded", initialize);
+document.addEventListener("DOMContentLoaded", Game.initialize);
