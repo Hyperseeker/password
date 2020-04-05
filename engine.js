@@ -87,9 +87,10 @@ let Game = {
 
 	difficulty: 5000,
 
-	adjustCountdown () {
 
-		let elapsed    = Game.timer.lap(),
+	tick () {
+
+		let elapsed    = Game.timer.left(),
 			total      = Game.difficulty,
 
 			percentage = (elapsed / total) * 100;
@@ -97,6 +98,9 @@ let Game = {
 		let width = Math.max(percentage, 0);
 
 		$countdown.setAttribute("style", `width: ${width}%;`);
+
+	},
+
 	initialize () {
 
 		let options = {
