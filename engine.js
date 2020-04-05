@@ -18,7 +18,7 @@ let Password = {
 		let left = Password.length,
 			used = [],
 
-			cells = [...document.querySelectorAll(".cell")],
+			cells = [...document.querySelectorAll("main .cell")],
 
 			pick = function () {
 
@@ -68,7 +68,7 @@ let Password = {
 
 	render () {
 		
-		for (key of Password.current) key.cell.dataset.key = key.key;
+		for (key of Password.current) key.cell.textContent = key.key;
 
 	},
 

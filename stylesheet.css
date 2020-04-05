@@ -126,6 +126,10 @@ main.failed + footer { display: block; }
 
 .cell {
 
+	display:         flex;
+	justify-content: center;
+	align-items:     center;
+
 	position: relative;
 
 	width:  5rem;
@@ -157,17 +161,5 @@ main.failed + footer { display: block; }
 	box-shadow: 0 0 8px;
 
 	opacity: 0.2;
-
-}
-
-.cell::after {
-
-	content: attr(data-key);
-
-	position: absolute;
-	top:      50%;
-	left:     50%;
-
-	transform: translate(-50%, -50%);
 
 }
