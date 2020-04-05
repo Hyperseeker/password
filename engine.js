@@ -96,9 +96,9 @@ let Game = {
 		let elapsed    = Game.timer.left(),
 			total      = Game.difficulty,
 
-			percentage = (elapsed / total) * 100;
-
-		let width = Math.max(percentage, 0);
+			percentage = (elapsed / total) * 100,
+			
+			width      = Math.max(percentage, 0);
 
 		$countdown.style.width = `${width}%`;
 
