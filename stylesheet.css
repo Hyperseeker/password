@@ -102,21 +102,9 @@ footer {
 
 }
 
-footer .cell-like {
 
-	display: inline-block;
 
-	margin: 0 0.175em;
-	padding: 0.25em 0.33em;
 
-	border: 2px solid currentColor;
-
-	background-color: var(--theme-opaque);
-
-	font-size: 1.75em;
-	color: var(--theme);
-
-	transform: translateY(0.125em);
 
 }
 
