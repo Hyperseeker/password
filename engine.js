@@ -62,8 +62,7 @@ let Password = {
 
 		Password.render();
 
-		Game.timer.stop();
-		Game.timer.start(Game.difficulty);
+		Game.timer.time.base ? Game.timer.restart() : Game.timer.start(Game.difficulty);
 
 	},
 
