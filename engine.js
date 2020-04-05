@@ -146,7 +146,7 @@ let KeyHandler = function (event) {
 
 	};
 
-	let cell = Password.current.filter(cell => cell.key == key).first;
+	let cell = Password.current.find(cell => cell.key == key);
 
 	if (!cell || cell.solved) return;
 
