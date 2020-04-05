@@ -130,6 +130,8 @@ main.failed + footer {
 	font-size: 2em;
 	color: var(--theme);
 
+	transition: 0.1s all;
+
 }
 
 .cell.solved { color: var(--solved); }
