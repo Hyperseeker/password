@@ -92,23 +92,25 @@ main.failed .cell:not(.solved) { color: var(--countdown); }
 
 footer {
 
-	display: none;
-
 	position: absolute;
 	bottom:   12%;
 
 	font-size: 1.25em;
-	color: white;
+	color:   white;
+
+	opacity: 0;
+	pointer-events: none;
+
+	transition: 0.33s all;
 
 }
 
-
-
-
+main.failed + footer {
+	
+	opacity: 1;
+	pointer-events: initial;
 
 }
-
-main.failed + footer { display: block; }
 
 /*  # CELL  */
 
