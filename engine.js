@@ -42,7 +42,7 @@ let Password = {
 
 		for ([element, cell] of Password.tuple) element.classList.remove("solved");
 
-		Game.$main.classList.remove("failed");
+		$main.classList.remove("failed");
 
 		Game.status = "ongoing";
 		
@@ -85,9 +85,6 @@ let Game = {
 
 	timer: null,
 
-	$countdown: document.querySelector(".countdown"),
-	$main:      document.querySelector("main"),
-
 	difficulty: 5000,
 
 	adjustCountdown () {
@@ -99,7 +96,7 @@ let Game = {
 
 		let width = Math.max(percentage, 0);
 
-		Game.$countdown.setAttribute("style", `width: ${width}%;`);
+		$countdown.setAttribute("style", `width: ${width}%;`);
 	initialize () {
 
 		let options = {
@@ -121,12 +118,14 @@ let Game = {
 
 		Game.status = "lost";
 
-		Game.$main.classList.add("failed");
+		$main.classList.add("failed");
 
 	}
 
 };
 
+let $countdown = document.querySelector(".countdown"),
+	$main      = document.querySelector("main");
 let listener = function (event) {
 
 	let key = event.key.toUpperCase();
