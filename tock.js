@@ -227,7 +227,6 @@ Tock.prototype.left = function () {
 
 Tock.prototype.reduce = function (value) {
 
-	// TODO: safe `.reduce`
-	this.duration -= value;
+	this.duration = Math.max(this.duration - value, 0);
 
 };
