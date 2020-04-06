@@ -54,6 +54,7 @@ body {
 	background-color: var(--background);
 
 	font-family: "Inter", "Helvetica Now", "Helvetica Neue", "Helvetica", sans-serif;
+	color: white;
 
 	box-sizing: border-box;
 	
@@ -157,7 +158,6 @@ header * + * { margin-block-start: 1em; }
 .score {
 
 	font-size: 2em;
-	color:   white;
 
 	opacity: 0;
 
@@ -239,8 +239,6 @@ footer {
 
 	display:     flex;
 	align-items: center;
-
-	color:   white;
 
 	opacity: 0;
 	pointer-events: none;
