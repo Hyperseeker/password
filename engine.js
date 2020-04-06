@@ -62,7 +62,13 @@ let Game = {
 
 		current: 0,
 
-		_adjust () { $score.textContent = Game.score.current },
+		_adjust () {
+			
+			$score.textContent = Game.score.current;
+
+			if (Game.score.current) $score.classList.add("visible");
+		
+		},
 
 		add (value) {
 			

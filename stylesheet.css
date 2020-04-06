@@ -91,12 +91,18 @@ header * + * { margin-block-start: 1em; }
 
 }
 
-.score {
+.score .value {
 
 	font-size: 2em;
 	color:   white;
-	
+
+	opacity: 0;
+
+	transition: 0.33s all;
+
 }
+
+.score .value.visible { opacity: 1; }
 
 
 /*  # CONTAINER  */
