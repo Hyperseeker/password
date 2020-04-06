@@ -219,7 +219,7 @@ Tock.prototype.left = function () {
 	if (!this.running) return this.time.paused || this.time.ended;
 	
 	let now  = _delta(this.time.started),
-		left = this.countdown ? this.duration - now : now;
+		left = Math.abs(!!this.countdown * this.duration - now);
 	
 	return left;
 	
