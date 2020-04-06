@@ -15,6 +15,8 @@ let Password = {
 
 	generate () {
 
+		Password.current = [];
+
 		let left = Password.length,
 			used = [],
 
@@ -34,9 +36,9 @@ let Password = {
 		
 		while (left) Password.current.last = {
 			
-			key:    pick(),
-			cell:   cells[Password.length - left--],
-			solved: false
+			key:     pick(),
+			element: cells[Password.length - left--],
+			solved:  false
 		
 		};
 
