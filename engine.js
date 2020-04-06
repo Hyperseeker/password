@@ -42,44 +42,6 @@ let Password = {
 		
 		};
 
-	},
-
-	reset () {
-
-		for (key of Password.current) key.cell.classList.remove("solved");
-
-		$main.classList.remove("failed");
-
-		Game.status = "ongoing";
-		
-		Password.current = [];
-	
-	},
-
-	resolve () {
-
-		Password.reset();
-
-		Password.generate();
-
-		Password.render();
-
-		Game.timer.time.base ? Game.timer.restart() : Game.timer.start(Game.difficulty);
-
-	},
-
-	render () {
-		
-		for (key of Password.current) key.cell.textContent = key.key;
-
-	},
-
-	negotiate (target) {
-
-		let cell = Password.current.find(key => key.key == target).cell;
-
-		cell.classList.add("solved");
-
 	}
 
 };
@@ -119,7 +81,21 @@ let Game = {
 
 		Game.timer = new Tock(options);
 	
-		Password.resolve();
+		Game.resolve();
+
+	},
+
+	resolve () {
+
+		DOMNegotiator.reset();
+
+		Game.status = "ongoing";
+
+		Password.generate();
+
+		DOMNegotiator.render();
+
+		Game.timer.time.base ? Game.timer.restart() : Game.timer.start(Game.difficulty);
 
 	},
 
@@ -128,6 +104,14 @@ let Game = {
 		Game.status = "lost";
 
 		$main.classList.add("failed");
+
+	},
+
+	succeed () {
+
+		Game.score += 100;
+
+		Game.resolve();
 
 	},
 	
@@ -146,7 +130,7 @@ let KeyHandler = function (event) {
 
 		if (key != " ") return;
 
-		Password.resolve();
+		Game.resolve();
 
 	};
 
@@ -165,13 +149,34 @@ let KeyHandler = function (event) {
 	
 	cell.solved = true;
 
-	Password.negotiate(cell.key);
+	DOMNegotiator.negotiate(cell);
 
-	if (Password.solved()) Password.resolve();
+	if (Password.solved()) Game.succeed();
 
 };
 
-let DOMNegotiator = function () {};
+let DOMNegotiator = {
+
+	render () {
+		
+		for (cell of Password.current) cell.element.textContent = cell.key;
+
+	},
+
+	reset () {
+
+		for (cell of Password.current) cell.element.classList.remove("solved");
+
+		$main.classList.remove("failed");
+			
+	},
+
+	negotiate (cell) {
+
+		cell.element.classList.add("solved");
+
+	}
+};
 
 window.addEventListener("keypress", KeyHandler);
 
