@@ -222,6 +222,10 @@ Tock.prototype.left = function () {
 	
 };
 
+/**
+* Remove `value` ms from `this.duration`
+* TODO: expand to include reducing current time for timer
+*/
 Tock.prototype.reduce = function (value) {
 
 	this.duration = Math.max(this.duration - value, 0);
