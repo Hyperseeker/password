@@ -9,80 +9,9 @@
 */
 
 /**
-* Called every tick for countdown clocks.
-* i.e. once every this.interval ms
+* Called by Tock internally to determine `source`'s offset from current real time
 */
-function _tick () {
-	
-	this.time.current += this.interval;
-	
-	if (this.countdown && this.duration - this.time.current < 0) {
-		
-		this.time.ended = 0;
-		this.running    = false;
-		
-		this.callback();
-		
-		clearTimeout(this.timeout);
-		
-		this.complete();
-		
-		return;
-		
-	} else {
-		
-		this.callback();
-		
-	}
-	
-	var diff              = _delta(this.time.started) - this.time.current,
-		untilNextInterval = this.interval - Math.max(diff, 0);
-	
-	if (untilNextInterval <= 0) {
-		
-		this.ticksMissed   = Math.floor(Math.abs(untilNextInterval) / this.interval);
-		this.time.current += this.ticksMissed * this.interval;
-		
-		if (this.running) this._tick();
-		
-	} else if (this.running) {
-		
-		this.timeout = setTimeout(this._tick.bind(this), untilNextInterval);
-		
-	};
-	
-};
-
-function _delta (source = 0) { return Date.now() - source };
-
-/**
-* Called by Tock internally - use start() instead
-*/
-function _startCountdown (duration) {
-	
-	this.duration     = duration;
-	this.time.started = Date.now();
-	this.time.current = 0;
-	
-	this.running      = true;
-	
-	this._tick();
-	
-}
-
-/**
-* Called by Tock internally - use start() instead
-*/
-function _startTimer (offset) {
-	
-	this.time.started = offset || Date.now();
-	this.time.current = 0;
-	
-	this.running      = true;
-	
-	this._tick();
-	
-}
+_delta = function (source = 0) { return Date.now() - source };
 
 var Tock = function (options) {
 	
@@ -123,10 +52,79 @@ var Tock = function (options) {
 	
 };
 
-Tock.prototype._tick           = _tick;
-Tock.prototype._startCountdown = _startCountdown;
-Tock.prototype._startTimer     = _startTimer;
-Tock.prototype._delta          = _delta;
+/**
+* Called every tick for countdown clocks.
+* i.e. once every this.interval ms
+*/
+Tock.prototype._tick = function () {
+	
+	this.time.current += this.interval;
+	
+	if (this.countdown && this.duration - this.time.current < 0) {
+		
+		this.time.ended = 0;
+		this.running    = false;
+		
+		this.callback();
+		
+		clearTimeout(this.timeout);
+		
+		this.complete();
+		
+		return;
+		
+	} else {
+		
+		this.callback();
+		
+	};
+	
+	var diff              = _delta(this.time.started) - this.time.current,
+		untilNextInterval = this.interval - Math.max(diff, 0);
+	
+	if (untilNextInterval <= 0) {
+		
+		this.ticksMissed   = Math.floor(Math.abs(untilNextInterval) / this.interval);
+		this.time.current += this.ticksMissed * this.interval;
+		
+		if (this.running) this._tick();
+		
+	} else if (this.running) {
+		
+		this.timeout = setTimeout(this._tick.bind(this), untilNextInterval);
+		
+	};
+	
+};
+
+/**
+* Called by Tock internally - use start() instead
+*/
+Tock.prototype._startCountdown = function (duration) {
+	
+	this.duration     = duration;
+	this.time.started = Date.now();
+	this.time.current = 0;
+	
+	this.running      = true;
+	
+	this._tick();
+	
+};
+
+/**
+* Called by Tock internally - use start() instead
+*/
+Tock.prototype._startTimer = function (offset) {
+	
+	this.time.started = offset || Date.now();
+	this.time.current = 0;
+	
+	this.running      = true;
+	
+	this._tick();
+	
+};
 
 /**
 * Reset the clock
@@ -141,7 +139,7 @@ Tock.prototype.reset = function () {
 };
 
 /**
-* Restart (stop → start) the clock
+* Restart (stop -> start) the clock
 */
 Tock.prototype.restart = function () {
 	
@@ -211,7 +209,6 @@ Tock.prototype.pause = function () {
 
 /**
 * Get the current clock time in ms.
-* Use with Tock.msToTime() to make it look nice.
 * @return {Integer} Number of milliseconds ellapsed/remaining
 */
 Tock.prototype.left = function () {
@@ -219,20 +216,18 @@ Tock.prototype.left = function () {
 	if (!this.running) return this.time.paused || this.time.ended;
 	
 	let now  = _delta(this.time.started),
-		left = this.countdown ? this.duration - now : now;
+		left = Math.abs(!!this.countdown * this.duration - now);
 	
 	return left;
 	
 };
 
+/**
+* Remove `value` ms from `this.duration`
+* TODO: expand to include reducing current time for timer
+*/
 Tock.prototype.reduce = function (value) {
 
-	console.log("before reduction", this.time.current);
-
-	// TODO: safe `.reduce`
-	//    *  if `this.time.current` < 0 after being reduced, clear timer
-	this.time.current += value;
-
-	console.log("after reduction",  this.time.current);
+	this.duration = Math.max(this.duration - value, 0);
 
 };

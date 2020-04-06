@@ -1,3 +1,13 @@
+let $main      = document.querySelector("main"),
+	$score     = document.querySelector(".score"),
+	$countdown = document.querySelector(".countdown"),
+
+	$menu = {
+
+		start: document.querySelector(".menu.start")
+
+	};
+
 let Password = {
 
 	current: [],
@@ -11,9 +21,11 @@ let Password = {
 		"R", "S", "T", "V", "W", "X", "Y", "Z"
 	],
 
-	solved () { return Password.current.every(key => key.solved) },
+	solved () { return Password.current.every(cell => cell.solved) },
 
 	generate () {
+
+		Password.current = [];
 
 		let left = Password.length,
 			used = [],
@@ -34,49 +46,11 @@ let Password = {
 		
 		while (left) Password.current.last = {
 			
-			key:    pick(),
-			cell:   cells[Password.length - left--],
-			solved: false
+			key:     pick(),
+			element: cells[Password.length - left--],
+			solved:  false
 		
 		};
-
-	},
-
-	reset () {
-
-		for (key of Password.current) key.cell.classList.remove("solved");
-
-		$main.classList.remove("failed");
-
-		Game.status = "ongoing";
-		
-		Password.current = [];
-	
-	},
-
-	resolve () {
-
-		Password.reset();
-
-		Password.generate();
-
-		Password.render();
-
-		Game.timer.time.base ? Game.timer.restart() : Game.timer.start(Game.difficulty);
-
-	},
-
-	render () {
-		
-		for (key of Password.current) key.cell.textContent = key.key;
-
-	},
-
-	negotiate (target) {
-
-		let cell = Password.current.find(key => key.key == target).cell;
-
-		cell.classList.add("solved");
 
 	}
 
@@ -84,12 +58,40 @@ let Password = {
 
 let Game = {
 
-	status: null,
+	status: "initial",
 
 	timer: null,
 
 	difficulty: 5000,
 
+	score: {
+
+		current: 0,
+
+		_adjust () {
+			
+			$score.textContent = Game.score.current;
+
+			if (Game.score.current) $score.classList.add("visible");
+		
+		},
+
+		add (value) {
+			
+			Game.score.current += value;
+
+			Game.score._adjust();
+		
+		},
+
+		reset () {
+			
+			Game.score.current = 0;
+		
+			Game.score._adjust();
+
+		}
+	},
 
 	tick () {
 
@@ -117,7 +119,21 @@ let Game = {
 
 		Game.timer = new Tock(options);
 	
-		Password.resolve();
+	},
+
+	resolve () {
+
+		DOMNegotiator.reset();
+
+		Game.status = "ongoing";
+
+		Password.generate();
+
+		DOMNegotiator.render();
+
+		Game.timer.time.base
+					? Game.timer.restart()
+					: Game.timer.start(Game.difficulty);
 
 	},
 
@@ -125,39 +141,96 @@ let Game = {
 
 		Game.status = "lost";
 
+		Game.score.reset();
+
 		$main.classList.add("failed");
 
-	}
+	},
+
+	succeed () {
+
+		Game.score.add(100);
+
+		Game.resolve();
+
+	},
+	
+	save () {}
 
 };
-
-let $countdown = document.querySelector(".countdown"),
-	$main      = document.querySelector("main");
 
 let KeyHandler = function (event) {
 
 	let key = event.key.toUpperCase();
 
+	if (Game.status == "initial") {
+
+		if (key != " ") return;
+
+		Game.resolve();
+
+		$menu.start.remove();
+
+	};
+
 	if (Game.status == "lost") {
 
 		if (key != " ") return;
 
-		Password.resolve();
+		Game.resolve();
 
 	};
 
 	let cell = Password.current.find(cell => cell.key == key);
 
-	if (!cell || cell.solved) return;
-
+	if (!cell && key.belongsTo(Password.alphabet)) {
+		
+		Game.timer.reduce(500);
+		
+		return;
+		
+	}
+	
+	if (cell.solved) return;
+	
 	cell.solved = true;
 
-	Password.negotiate(cell.key);
+	DOMNegotiator.negotiate(cell);
 
-	if (Password.solved()) Password.resolve();
+	if (Password.solved()) Game.succeed();
 
 };
 
-window.addEventListener("keypress", KeyHandler);
+let DOMNegotiator = {
 
-document.addEventListener("DOMContentLoaded", Game.initialize);
+	render () {
+		
+		for (cell of Password.current) cell.element.textContent = cell.key;
+
+	},
+
+	reset () {
+
+		for (cell of Password.current) cell.element.classList.remove("solved");
+
+		$main.classList.remove("failed");
+			
+	},
+
+	negotiate (cell) {
+
+		cell.element.classList.add("solved");
+
+	}
+
+};
+
+let events = [
+
+	{ type: "keypress", 		handler: KeyHandler 	 },
+	{ type: "DOMContentLoaded", handler: Game.initialize },
+	{ type: "beforeunload", 	handler: Game.save 		 }
+
+];
+
+for ({type, handler} of events) document.addEventListener(type, handler);

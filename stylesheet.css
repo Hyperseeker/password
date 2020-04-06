@@ -22,11 +22,17 @@
 	/*  Colors  */
 	
 	--theme:        hsl(  0,   0%, 87%);
-	--theme-opaque: hsl(  0,   0%, 87%, 0.2);
 	--solved:       hsl(127,  63%, 49%);
 
 	--timer:        hsl(  3,  63%, 36%);
 	--countdown:    hsl(  3, 100%, 61%);
+
+	--background:   hsl(  0,   0%, 20%); /* hex: #333 */
+
+
+	/*  Sizing  */
+
+	--padding:        5%;
 
 }
 
@@ -35,33 +41,106 @@
 
 body {
 
-	display: flex;
+	display:         flex;
+	flex-direction:  column;
 	justify-content: center;
-	align-items: center;
+	align-items:     center;
 
 	height: 100vh;
 
 	margin: 0;
+	padding: var(--padding);
 
-	background-color: #333;
+	background-color: var(--background);
 
 	font-family: "Inter", "Helvetica Now", "Helvetica Neue", "Helvetica", sans-serif;
+	color: white;
+
+	box-sizing: border-box;
 	
 }
 
 
-/*  # TIMER  */
+/*  # MENU  */
+
+.menu {
+
+	display:         flex;
+	flex-direction:  column;
+	justify-content: center;
+	align-items:     center;
+
+	position: absolute;
+	top:    0;
+	bottom: 0;
+	left:   0;
+	right:  0;
+
+	z-index: 100;
+
+}
+
+.menu.start {
+
+	background-color: var(--background);
+
+}
+
+.menu.start .title { position: relative; }
+
+.menu.start .title .itself {
+
+	font-family: monospace;
+	font-size: 10em;
+	text-indent: -0.1ch;
+
+}
+
+.menu.start .title .tagline {
+
+	position: absolute;
+	top: 1em;
+
+}
+
+.menu.start .prompt {
+
+	display:     flex;
+	align-items: center;
+
+	position: absolute;
+	bottom: var(--padding);
+
+}
+
+
+/*  # HEADER  */
+
+header {
+
+	display:         flex;
+	flex-direction:  column;
+	justify-content: center;
+	align-items:     center;
+
+	width: 100%;
+
+	margin-block-start: -1.5em;
+
+}
+
+header * + * { margin-block-start: 1em; }
 
 .timer {
 
-	position: absolute;
-	top:      6%;
-	left:     4%;
-	right:    4%;
+	width:  100%;
+	height: 1.25vh;
 
-	height: 1.25%;
+	border-radius: 0.125em;
 
 	background-color: var(--timer);
+
+	overflow: hidden;
 
 }
 
@@ -76,6 +155,18 @@ body {
 
 }
 
+.score {
+
+	font-size: 2em;
+
+	opacity: 0;
+
+	transition: 0.33s all;
+
+}
+
+.score.visible { opacity: 1; }
+
 
 /*  # CONTAINER  */
 
@@ -84,33 +175,12 @@ main {
 	display: flex;
 	justify-content: space-between;
 
+	margin: auto;
+
 }
 
 main.failed .cell:not(.solved) { color: var(--countdown); }
 
-/*  # START OVER  */
-
-footer {
-
-	position: absolute;
-	bottom:   12%;
-
-	font-size: 1.25em;
-	color:   white;
-
-	opacity: 0;
-	pointer-events: none;
-
-	transition: 0.33s all;
-
-}
-
-main.failed + footer {
-	
-	opacity: 1;
-	pointer-events: initial;
-
-}
 
 /*  # CELL  */
 
@@ -122,21 +192,26 @@ main.failed + footer {
 
 	position: relative;
 
-	width:  5rem;
-	height: 5rem;
+	min-width:  5rem;
+	min-height: 5rem;
 
-	border: 2px solid currentColor;
+	margin: 0 0.5em;
+	padding: 0 0.5em;
+
+	border: 3px solid currentColor;
+	border-radius: 0.175em;
 
 	font-size: 2em;
+	line-height: 1;
 	color: var(--theme);
 
 	transition: 0.1s all;
 
+	box-sizing: border-box;
+
 }
 
 .cell.solved { color: var(--solved); }
-
-.cell + .cell { margin-left: 1em; }
 
 .cell::before {
 
@@ -153,5 +228,35 @@ main.failed + footer {
 	box-shadow: 0 0 8px;
 
 	opacity: 0.2;
+
+}
+
+
+/*  # START OVER  */
+
+footer {
+
+	display:     flex;
+	align-items: center;
+
+	opacity: 0;
+	pointer-events: none;
+
+	transition: 0.33s all;
+
+}
+
+footer .cell {
+
+	min-height: 3rem;
+
+	font-size: 1.5em;
+
+}
+
+main.failed + footer {
+	
+	opacity: 1;
+	pointer-events: initial;
 
 }
