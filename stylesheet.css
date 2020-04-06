@@ -195,6 +195,7 @@ main.failed .cell:not(.solved) { color: var(--countdown); }
 	min-width:  5rem;
 	min-height: 5rem;
 
+	margin: 0 0.5em;
 	padding: 0 0.5em;
 
 	border: 3px solid currentColor;
@@ -211,8 +212,6 @@ main.failed .cell:not(.solved) { color: var(--countdown); }
 }
 
 .cell.solved { color: var(--solved); }
-
-.cell + .cell { margin-left: 1em; }
 
 .cell::before {
 
@@ -250,8 +249,6 @@ footer {
 footer .cell {
 
 	min-height: 3rem;
-	
-	margin: 0 0.5em;
 
 	font-size: 1.5em;
 
