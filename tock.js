@@ -8,6 +8,7 @@
 * Modified by Firebrand for use in `password`: https://github.com/FirebrandCoding/password
 */
 
+_delta = function (source = 0) { return Date.now() - source };
 
 var Tock = function (options) {
 	
@@ -92,8 +93,6 @@ function _tick () {
 	};
 	
 };
-
-function _delta (source = 0) { return Date.now() - source };
 
 /**
 * Called by Tock internally - use start() instead
