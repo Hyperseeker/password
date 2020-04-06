@@ -181,7 +181,7 @@ let DOMNegotiator = {
 	}
 };
 
-window.addEventListener("keypress", KeyHandler);
+document.addEventListener("keypress", KeyHandler);
 
 document.addEventListener("DOMContentLoaded", Game.initialize);
 
