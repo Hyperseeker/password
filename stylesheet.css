@@ -154,7 +154,7 @@ header * + * { margin-block-start: 1em; }
 
 }
 
-.score .value {
+.score {
 
 	font-size: 2em;
 	color:   white;
@@ -165,7 +165,7 @@ header * + * { margin-block-start: 1em; }
 
 }
 
-.score .value.visible { opacity: 1; }
+.score.visible { opacity: 1; }
 
 
 /*  # CONTAINER  */
