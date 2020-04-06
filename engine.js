@@ -1,6 +1,12 @@
-let $countdown = document.querySelector(".countdown"),
-	$main      = document.querySelector("main"),
-	$score     = document.querySelector(".score .value");
+let $main      = document.querySelector("main"),
+	$score     = document.querySelector(".score"),
+	$countdown = document.querySelector(".countdown"),
+
+	$menu = {
+
+		start: document.querySelector(".menu.start")
+
+	};
 
 let Password = {
 
@@ -52,7 +58,7 @@ let Password = {
 
 let Game = {
 
-	status: null,
+	status: "initial",
 
 	timer: null,
 
@@ -113,8 +119,6 @@ let Game = {
 
 		Game.timer = new Tock(options);
 	
-		Game.resolve();
-
 	},
 
 	resolve () {
@@ -158,6 +162,16 @@ let Game = {
 let KeyHandler = function (event) {
 
 	let key = event.key.toUpperCase();
+
+	if (Game.status == "initial") {
+
+		if (key != " ") return;
+
+		Game.resolve();
+
+		$menu.start.remove();
+
+	};
 
 	if (Game.status == "lost") {
 

@@ -27,6 +27,13 @@
 	--timer:        hsl(  3,  63%, 36%);
 	--countdown:    hsl(  3, 100%, 61%);
 
+	--background:   hsl(  0,   0%, 20%); /* hex: #333 */
+
+
+	/*  Sizing  */
+
+	--padding:        5%;
+
 }
 
 
@@ -42,14 +49,67 @@ body {
 	height: 100vh;
 
 	margin: 0;
-	padding: 5%;
+	padding: var(--padding);
 
-	background-color: #333;
+	background-color: var(--background);
 
 	font-family: "Inter", "Helvetica Now", "Helvetica Neue", "Helvetica", sans-serif;
 
 	box-sizing: border-box;
 	
+}
+
+
+/*  # MENU  */
+
+.menu {
+
+	display:         flex;
+	flex-direction:  column;
+	justify-content: center;
+	align-items:     center;
+
+	position: absolute;
+	top:    0;
+	bottom: 0;
+	left:   0;
+	right:  0;
+
+	z-index: 100;
+
+}
+
+.menu.start {
+
+	background-color: var(--background);
+
+}
+
+.menu.start .title { position: relative; }
+
+.menu.start .title .itself {
+
+	font-family: monospace;
+	font-size: 10em;
+	text-indent: -0.1ch;
+
+}
+
+.menu.start .title .tagline {
+
+	position: absolute;
+	top: 1em;
+
+}
+
+.menu.start .prompt {
+
+	display:     flex;
+	align-items: center;
+
+	position: absolute;
+	bottom: var(--padding);
+
 }
 
 

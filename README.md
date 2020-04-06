@@ -16,13 +16,15 @@ It is also **not** optimized for virtual keyboards, even if you have a display l
 
 # How to Play
 
-[Open the game](https://firebrandcoding.github.io/password). The countdown starts as soon as you open the page.
+[Open the game](https://firebrandcoding.github.io/password). Press `[Space]` to start.
 
-Press the keys you see on the screen.
+Press the keys you see on the screen in any order. Pressing keys not on the screen reduces your timer by half a second. Pressing any of the "solved" keys again does nothing.
 
-If you press all of them in time, you advance to the next round. If you don't, the game is over. Press `[Space]` to start over when that happens.
+If you "solve" all of them in time, you advance to the next round. If you don't, the game is over. Press `[Space]` to start over when that happens.
 
-There's no score. Play and start over for as long as you like. Quit when you've had enough.
+Each victory gains you 100 points. Losing resets the score for the session.
+
+Play and start over for as long as you like. Quit when you've had enough.
 
 # License
 
