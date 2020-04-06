@@ -56,7 +56,7 @@ var Tock = function (options) {
 * Called every tick for countdown clocks.
 * i.e. once every this.interval ms
 */
-function _tick () {
+Tock.prototype._tick = function () {
 	
 	this.time.current += this.interval;
 	
@@ -100,7 +100,7 @@ function _tick () {
 /**
 * Called by Tock internally - use start() instead
 */
-function _startCountdown (duration) {
+Tock.prototype._startCountdown = function (duration) {
 	
 	this.duration     = duration;
 	this.time.started = Date.now();
@@ -115,7 +115,7 @@ function _startCountdown (duration) {
 /**
 * Called by Tock internally - use start() instead
 */
-function _startTimer (offset) {
+Tock.prototype._startTimer = function (offset) {
 	
 	this.time.started = offset || Date.now();
 	this.time.current = 0;
@@ -125,11 +125,6 @@ function _startTimer (offset) {
 	this._tick();
 	
 };
-
-Tock.prototype._tick           = _tick;
-Tock.prototype._startCountdown = _startCountdown;
-Tock.prototype._startTimer     = _startTimer;
-Tock.prototype._delta          = _delta;
 
 /**
 * Reset the clock
