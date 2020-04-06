@@ -143,7 +143,6 @@ let KeyHandler = function (event) {
 	if (!cell) {
 		
 		Game.timer.reduce(500);
-		Game.tick();
 		
 		return;
 		
