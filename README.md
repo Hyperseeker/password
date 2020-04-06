@@ -8,6 +8,8 @@ I love these kinds of games.
 
 I needed a small project, partly to exercise creativity and partly to cope with depression.
 
+People liked it, and I'm enjoying working on it, so it's getting developed into something better.
+
 # Disclaimers
 
 The game is **not** optimized for anything other than desktop displays.
