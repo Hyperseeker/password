@@ -34,17 +34,21 @@
 
 body {
 
-	display: flex;
+	display:         flex;
+	flex-direction:  column;
 	justify-content: center;
-	align-items: center;
+	align-items:     center;
 
 	height: 100vh;
 
 	margin: 0;
+	padding: 5%;
 
 	background-color: #333;
 
 	font-family: "Inter", "Helvetica Now", "Helvetica Neue", "Helvetica", sans-serif;
+
+	box-sizing: border-box;
 	
 }
 
@@ -58,10 +62,9 @@ header {
 	justify-content: center;
 	align-items:     center;
 
-	position: absolute;
-	top:      6%;
-	left:     4%;
-	right:    4%;
+	width: 100%;
+
+	margin-block-start: -1.5em;
 
 }
 
@@ -111,6 +114,8 @@ main {
 	
 	display: flex;
 	justify-content: space-between;
+
+	margin: auto;
 
 }
 
@@ -174,9 +179,6 @@ footer {
 
 	display:     flex;
 	align-items: center;
-
-	position: absolute;
-	bottom:   12%;
 
 	color:   white;
 
