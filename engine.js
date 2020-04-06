@@ -54,6 +54,7 @@ let Game = {
 
 	difficulty: 5000,
 
+	score: 0,
 
 	tick () {
 
@@ -102,6 +103,8 @@ let Game = {
 	lose () {
 
 		Game.status = "lost";
+
+		Game.score = 0;
 
 		$main.classList.add("failed");
 
