@@ -8,6 +8,9 @@
 * Modified by Firebrand for use in `password`: https://github.com/FirebrandCoding/password
 */
 
+/**
+* Called by Tock internally to determine `source`'s offset from current real time
+*/
 _delta = function (source = 0) { return Date.now() - source };
 
 var Tock = function (options) {
