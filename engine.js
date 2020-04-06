@@ -15,7 +15,7 @@ let Password = {
 		"R", "S", "T", "V", "W", "X", "Y", "Z"
 	],
 
-	solved () { return Password.current.every(key => key.solved) },
+	solved () { return Password.current.every(cell => cell.solved) },
 
 	generate () {
 
@@ -100,7 +100,9 @@ let Game = {
 
 		DOMNegotiator.render();
 
-		Game.timer.time.base ? Game.timer.restart() : Game.timer.start(Game.difficulty);
+		Game.timer.time.base
+					? Game.timer.restart()
+					: Game.timer.start(Game.difficulty);
 
 	},
 
