@@ -77,7 +77,7 @@ Tock.prototype._tick = function () {
 		
 		this.callback();
 		
-	}
+	};
 	
 	var diff              = _delta(this.time.started) - this.time.current,
 		untilNextInterval = this.interval - Math.max(diff, 0);
@@ -110,7 +110,7 @@ Tock.prototype._startCountdown = function (duration) {
 	
 	this._tick();
 	
-}
+};
 
 /**
 * Called by Tock internally - use start() instead
@@ -139,7 +139,7 @@ Tock.prototype.reset = function () {
 };
 
 /**
-* Restart (stop → start) the clock
+* Restart (stop -> start) the clock
 */
 Tock.prototype.restart = function () {
 	
@@ -209,7 +209,6 @@ Tock.prototype.pause = function () {
 
 /**
 * Get the current clock time in ms.
-* Use with Tock.msToTime() to make it look nice.
 * @return {Integer} Number of milliseconds ellapsed/remaining
 */
 Tock.prototype.left = function () {
