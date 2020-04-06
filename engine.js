@@ -58,7 +58,28 @@ let Game = {
 
 	difficulty: 5000,
 
-	score: 0,
+	score: {
+
+		current: 0,
+
+		_adjust () { $score.textContent = Game.score.current },
+
+		add (value) {
+			
+			Game.score.current += value;
+
+			Game.score._adjust();
+		
+		},
+
+		reset () {
+			
+			Game.score.current = 0;
+		
+			Game.score._adjust();
+
+		}
+	},
 
 	tick () {
 
@@ -110,7 +131,7 @@ let Game = {
 
 		Game.status = "lost";
 
-		Game.score = 0;
+		Game.score.reset();
 
 		$main.classList.add("failed");
 
@@ -118,7 +139,7 @@ let Game = {
 
 	succeed () {
 
-		Game.score += 100;
+		Game.score.add(100);
 
 		Game.resolve();
 
@@ -181,6 +202,7 @@ let DOMNegotiator = {
 		cell.element.classList.add("solved");
 
 	}
+
 };
 
 let events = [
