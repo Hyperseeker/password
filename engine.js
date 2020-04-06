@@ -183,7 +183,7 @@ let KeyHandler = function (event) {
 
 	let cell = Password.current.find(cell => cell.key == key);
 
-	if (!cell) {
+	if (!cell && key.belongsTo(Password.alphabet)) {
 		
 		Game.timer.reduce(500);
 		
