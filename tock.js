@@ -8,6 +8,46 @@
 * Modified by Firebrand for use in `password`: https://github.com/FirebrandCoding/password
 */
 
+
+var Tock = function (options) {
+	
+	let defaults = {
+		
+		running:    false,
+		countdown:  false,
+		
+		timeout:     null,
+		ticksMissed: null,
+		
+		interval:     100,
+
+		time: {
+
+			current:    0,
+
+			started:    0,
+			paused:     0,
+			ended:      0,
+
+			base:       0
+
+		},
+		
+		duration:       0,
+		
+		callback    () {},
+		complete    () {}
+		
+	};
+
+	let result = Object.assign(defaults, options);
+	
+	Object.assign(this, result);
+	
+	if (!this instanceof Tock) return new Tock(options);
+	
+};
+
 /**
 * Called every tick for countdown clocks.
 * i.e. once every this.interval ms
@@ -81,45 +121,6 @@ function _startTimer (offset) {
 	this.running      = true;
 	
 	this._tick();
-	
-}
-
-var Tock = function (options) {
-	
-	let defaults = {
-		
-		running:    false,
-		countdown:  false,
-		
-		timeout:     null,
-		ticksMissed: null,
-		
-		interval:     100,
-
-		time: {
-
-			current:    0,
-
-			started:    0,
-			paused:     0,
-			ended:      0,
-
-			base:       0
-
-		},
-		
-		duration:       0,
-		
-		callback    () {},
-		complete    () {}
-		
-	};
-
-	let result = Object.assign(defaults, options);
-	
-	Object.assign(this, result);
-	
-	if (!this instanceof Tock) return new Tock(options);
 	
 };
 
