@@ -181,8 +181,12 @@ let DOMNegotiator = {
 	}
 };
 
-document.addEventListener("keypress", KeyHandler);
+let events = [
 
-document.addEventListener("DOMContentLoaded", Game.initialize);
+	{ type: "keypress", 		handler: KeyHandler 	 },
+	{ type: "DOMContentLoaded", handler: Game.initialize },
+	{ type: "beforeunload", 	handler: Game.save 		 }
 
-document.addEventListener("beforeunload", Game.save);
+];
+
+for ({type, handler} of events) document.addEventListener(type, handler);
