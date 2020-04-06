@@ -110,6 +110,7 @@ main {
 
 main.failed .cell:not(.solved) { color: var(--countdown); }
 
+
 /*  # CELL  */
 
 .cell {
@@ -159,6 +160,7 @@ main.failed .cell:not(.solved) { color: var(--countdown); }
 	opacity: 0.2;
 
 }
+
 
 /*  # START OVER  */
 
