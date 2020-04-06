@@ -151,6 +151,16 @@ footer {
 
 }
 
+footer .cell {
+
+	min-height: 3rem;
+	
+	margin: 0 0.5em;
+
+	font-size: 1.5em;
+
+}
+
 main.failed + footer {
 	
 	opacity: 1;
