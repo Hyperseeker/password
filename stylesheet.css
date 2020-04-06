@@ -88,30 +88,6 @@ main {
 
 main.failed .cell:not(.solved) { color: var(--countdown); }
 
-/*  # START OVER  */
-
-footer {
-
-	position: absolute;
-	bottom:   12%;
-
-	font-size: 1.25em;
-	color:   white;
-
-	opacity: 0;
-	pointer-events: none;
-
-	transition: 0.33s all;
-
-}
-
-main.failed + footer {
-	
-	opacity: 1;
-	pointer-events: initial;
-
-}
-
 /*  # CELL  */
 
 .cell {
@@ -153,5 +129,31 @@ main.failed + footer {
 	box-shadow: 0 0 8px;
 
 	opacity: 0.2;
+
+}
+
+/*  # START OVER  */
+
+footer {
+
+	display:     flex;
+	align-items: center;
+
+	position: absolute;
+	bottom:   12%;
+
+	color:   white;
+
+	opacity: 0;
+	pointer-events: none;
+
+	transition: 0.33s all;
+
+}
+
+main.failed + footer {
+	
+	opacity: 1;
+	pointer-events: initial;
 
 }
