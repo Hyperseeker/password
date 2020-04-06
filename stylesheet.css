@@ -22,7 +22,6 @@
 	/*  Colors  */
 	
 	--theme:        hsl(  0,   0%, 87%);
-	--theme-opaque: hsl(  0,   0%, 87%, 0.2);
 	--solved:       hsl(127,  63%, 49%);
 
 	--timer:        hsl(  3,  63%, 36%);
