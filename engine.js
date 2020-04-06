@@ -1,3 +1,7 @@
+let $countdown = document.querySelector(".countdown"),
+	$main      = document.querySelector("main"),
+	$score     = document.querySelector(".score .value");
+
 let Password = {
 
 	current: [],
@@ -121,9 +125,6 @@ let Game = {
 	save () {}
 
 };
-
-let $countdown = document.querySelector(".countdown"),
-	$main      = document.querySelector("main");
 
 let KeyHandler = function (event) {
 
