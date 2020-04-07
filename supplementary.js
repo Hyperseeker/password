@@ -16,5 +16,14 @@ Object.defineProperty(Array.prototype, 'last', {
 
 });
 
+Array.prototype.remove = function (item) {
+
+	if (!this.includes(item)) return;
+
+	this.splice(this.indexOf(item), 1);
+
+	return this;
+
+};
 
 String.prototype.belongsTo = function (array) { return array.includes(this.valueOf()); }
