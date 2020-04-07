@@ -124,6 +124,8 @@ let Game = {
 	resolve () {
 
 		DOMNegotiator.reset();
+		
+		Game.score.reset();
 
 		Game.status = "ongoing";
 
@@ -140,8 +142,6 @@ let Game = {
 	lose () {
 
 		Game.status = "lost";
-
-		Game.score.reset();
 
 		$main.classList.add("failed");
 
