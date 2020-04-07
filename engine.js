@@ -139,7 +139,9 @@ let Game = {
 
 	succeed () {
 
-		Game.score.add(100);
+		let score = Password.length / (Game.difficulty / 1000) * 20;
+
+		Game.score.add(score);
 
 		Game.resolve();
 
