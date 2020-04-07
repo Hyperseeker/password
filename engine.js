@@ -68,27 +68,19 @@ let Game = {
 
 		current: 0,
 
-		_adjust () {
-			
-			$score.textContent = Game.score.current;
-
-			if (Game.score.current) $score.classList.add("visible");
-		
-		},
-
 		add (value) {
 			
 			Game.score.current += value;
 
-			Game.score._adjust();
-		
+			DOMNegotiator.score();
+
 		},
 
 		reset () {
 			
 			Game.score.current = 0;
 		
-			Game.score._adjust();
+			DOMNegotiator.score();
 
 		}
 	},
@@ -215,6 +207,14 @@ let DOMNegotiator = {
 
 		$main.classList.remove("failed");
 			
+	},
+
+	score () {
+
+		$score.textContent = Game.score.current;
+
+		if (Game.score.current) $score.classList.add("visible");
+
 	},
 
 	negotiate (cell) {
