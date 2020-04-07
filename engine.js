@@ -89,7 +89,7 @@ let Game = {
 		}
 	},
 
-	tick () {
+	tick       () {
 
 		let elapsed    = Game.timer.left(),
 			total      = Game.difficulty,
@@ -117,7 +117,7 @@ let Game = {
 	
 	},
 
-	resolve () {
+	resolve    () {
 
 		Game.status = "ongoing";
 
@@ -133,7 +133,7 @@ let Game = {
 
 	},
 
-	lose () {
+	lose       () {
 
 		Game.status = "lost";
 
@@ -141,7 +141,7 @@ let Game = {
 
 	},
 
-	succeed () {
+	succeed    () {
 
 		let score = Password.length / (Game.difficulty / 1000) * 20;
 
@@ -151,7 +151,7 @@ let Game = {
 
 	},
 
-	start () {
+	start      () {
 
 		if (Game.status != "initial" && Game.status != "lost") return;
 
@@ -163,7 +163,7 @@ let Game = {
 
 	},
 
-	foul () {
+	foul       () {
 
 		let penalty = Game.difficulty / 10;
 
@@ -171,11 +171,11 @@ let Game = {
 
 	},
 
-	settings () {},
+	settings   () {},
 
-	load () {},
+	load       () {},
 	
-	save () {}
+	save       () {}
 
 };
 
