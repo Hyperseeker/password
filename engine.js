@@ -160,6 +160,15 @@ let Game = {
 		$menu.start && $menu.start.remove();
 
 	},
+
+	foul () {
+
+		let penalty = Game.difficulty / 10;
+
+		Game.timer.reduce(penalty);
+
+	},
+
 	settings () {},
 	
 	save () {}
