@@ -16,6 +16,5 @@ Object.defineProperty(Array.prototype, 'last', {
 
 });
 
-Array.zip = (...arrays) => arrays.first.map((_, index) => arrays.map(array => array[index]));
 
 String.prototype.belongsTo = function (array) { return array.includes(this.valueOf()); }
