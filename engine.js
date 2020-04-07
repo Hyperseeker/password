@@ -125,8 +125,6 @@ let Game = {
 
 		DOMNegotiator.reset();
 		
-		Game.score.reset();
-
 		Game.status = "ongoing";
 
 		Password.generate();
@@ -178,6 +176,8 @@ let KeyHandler = function (event) {
 		if (key != " ") return;
 
 		Game.resolve();
+		
+		Game.score.reset();
 
 	};
 
