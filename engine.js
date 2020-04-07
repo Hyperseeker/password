@@ -70,6 +70,8 @@ let Game = {
 
 		current: 0,
 
+		highest: 0,
+
 		add (value) {
 			
 			Game.score.current += value;
@@ -170,6 +172,8 @@ let Game = {
 	},
 
 	settings () {},
+
+	load () {},
 	
 	save () {}
 
