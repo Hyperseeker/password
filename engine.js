@@ -52,6 +52,8 @@ let Password = {
 		
 		};
 
+		KeyHandler._map = used;
+
 	}
 
 };
