@@ -259,7 +259,21 @@ let DOMNegotiator = {
 
 	negotiate (cell) {
 
-		cell.element.classList.add("solved");
+		let pressed = cell.key.belongsTo(KeyHandler._pressed);
+
+		if (pressed) {
+
+			cell.element.classList.add("pressed");
+
+			cell.solved
+				? cell.element.classList.add("solved")
+				: cell.element.classList.remove("solved");
+
+		} else {
+
+			cell.element.classList.remove("pressed");
+
+		};
 
 	}
 
