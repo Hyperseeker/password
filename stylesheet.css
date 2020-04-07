@@ -231,6 +231,8 @@ main.failed .cell:not(.solved) { color: var(--countdown); }
 
 }
 
+.cell.pressed { transform: scale(0.9); }
+
 
 /*  # START OVER  */
 
