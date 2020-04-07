@@ -149,6 +149,17 @@ let Game = {
 
 	},
 
+	start () {
+
+		if (Game.status != "initial" && Game.status != "lost") return;
+
+		Game.score.reset();
+
+		Game.resolve();
+
+		$menu.start && $menu.start.remove();
+
+	},
 	settings () {},
 	
 	save () {}
