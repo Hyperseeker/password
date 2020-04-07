@@ -144,6 +144,8 @@ let Game = {
 		Game.resolve();
 
 	},
+
+	settings () {},
 	
 	save () {}
 
