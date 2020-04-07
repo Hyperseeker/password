@@ -115,11 +115,11 @@ let Game = {
 
 	resolve () {
 
-		DOMNegotiator.reset();
-
 		Game.status = "ongoing";
 
 		Password.generate();
+
+		DOMNegotiator.reset();
 
 		DOMNegotiator.render();
 
