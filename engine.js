@@ -267,9 +267,12 @@ let DOMNegotiator = {
 
 let events = [
 
-	{ type: "keypress", 		handler: KeyHandler 	 },
-	{ type: "DOMContentLoaded", handler: Game.initialize },
-	{ type: "beforeunload", 	handler: Game.save 		 }
+	{ type: "keydown", 			handler: KeyHandler.keydown },
+	{ type: "keyup", 			handler: KeyHandler.keyup   },
+
+	{ type: "DOMContentLoaded", handler: Game.initialize    },
+
+	{ type: "beforeunload", 	handler: Game.save 		    }
 
 ];
 
