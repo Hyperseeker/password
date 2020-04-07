@@ -141,8 +141,6 @@ let Game = {
 
 		Game.status = "lost";
 
-		Game.score.reset();
-
 		$main.classList.add("failed");
 
 	},
@@ -178,6 +176,8 @@ let KeyHandler = function (event) {
 		if (key != " ") return;
 
 		Game.resolve();
+
+		Game.score.reset();
 
 	};
 
