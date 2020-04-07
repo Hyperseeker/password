@@ -151,47 +151,85 @@ let Game = {
 
 };
 
-let KeyHandler = function (event) {
+let KeyHandler = {
 
-	let key = event.key.toUpperCase();
+	_pressed:  [],
+	_map:      [],
 
-	if (Game.status == "initial") {
+	_special:  [
 
-		if (key != " ") return;
+		" ",
 
-		Game.resolve();
+		"ArrowUp",
+		"ArrowDown",
+		"ArrowLeft",
+		"ArrowRight",
 
-		$menu.start.remove();
+		"Ctrl",
+		"Meta"
 
-	};
+	],
 
-	if (Game.status == "lost") {
+	keydown (event) {
 
-		if (key != " ") return;
+		let key = event.key.toUpperCase();
 
-		Game.resolve();
+		if (key.belongsTo(KeyHandler._map) && Game.status == "ongoing") {
 
-		Game.score.reset();
+			let cell = Password.current.find(cell => cell.key == key);
 
-	};
+			cell.solved = true;
 
-	let cell = Password.current.find(cell => cell.key == key);
+			if (Password.solved()) {
 
-	if (!cell && key.belongsTo(Password.alphabet)) {
+				KeyHandler._pressed = [];
+				
+				Game.succeed();
+
+				return;
+			
+			};
+
+			KeyHandler._pressed.last = key;
+
+			DOMNegotiator.negotiate(cell);
+
+		} else if (key.belongsTo(KeyHandler._special)) {
+
+			let handler = {
+
+				   " ": Game.start,
+
+				"Ctrl": Game.settings,
+				"Meta": Game.settings
+
+			};
+
+			handler[key]();
+
+		} else {
+
+			Game.foul();
+
+		}
+
+	},
+
+	keyup   (event) {
+
+		let key = event.key.toUpperCase();
+
+		if (key.belongsTo(KeyHandler._map)) {
+
+			let cell = Password.current.find(cell => cell.key == key);
 		
-		Game.timer.reduce(500);
+			KeyHandler._pressed.remove(key);
+
+			DOMNegotiator.negotiate(cell);
 		
-		return;
-		
+		};
+
 	}
-	
-	if (cell.solved) return;
-	
-	cell.solved = true;
-
-	DOMNegotiator.negotiate(cell);
-
-	if (Password.solved()) Game.succeed();
 
 };
 
