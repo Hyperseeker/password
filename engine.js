@@ -107,6 +107,7 @@ let Game = {
 		let options = {
 
 			countdown: true,
+			interval:  16,
 
 			callback: Game.tick,
 			complete: Game.lose

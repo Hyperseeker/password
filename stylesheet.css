@@ -151,7 +151,6 @@ header * + * { margin-block-start: 1em; }
 
 	background-color: var(--countdown);
 
-	transition: 0.1s all linear;
 
 }
 
