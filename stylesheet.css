@@ -211,8 +211,6 @@ main.failed .cell:not(.solved) { color: var(--countdown); }
 
 }
 
-.cell.solved { color: var(--solved); }
-
 .cell::before {
 
 	content: "";
@@ -232,6 +230,8 @@ main.failed .cell:not(.solved) { color: var(--countdown); }
 }
 
 .cell.pressed { transform: scale(0.9); }
+.cell.solved  { color: var(--solved); }
+
 
 
 /*  # START OVER  */
