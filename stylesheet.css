@@ -192,8 +192,8 @@ main.failed .cell:not(.solved) { color: var(--countdown); }
 
 	position: relative;
 
-	min-width:  5rem;
-	min-height: 5rem;
+	min-width:  2.5em;
+	min-height: 2.5em;
 
 	margin:  0 0.5em;
 	padding: 0 0.5em;
@@ -250,7 +250,7 @@ footer {
 
 footer .cell {
 
-	min-height: 3rem;
+	min-height: 2.25em;
 
 	font-size: 1.5em;
 
