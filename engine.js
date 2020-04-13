@@ -154,13 +154,46 @@ let Game = {
 
 	start      () {
 
-		if (Game.status != "initial" && Game.status != "lost") return;
+		let _stateHandler = {
+
+			"ongoing": Game.pause,
+			"paused":  Game.unpause
+
+		};
+
+		if (Game.status.belongsTo(Object.keys(_stateHandler))) {
+			
+			_stateHandler[Game.status]();
+
+			return;
+		
+		} else if (Game.status != "initial" && Game.status != "lost") {
+			
+			return;
+		
+		};
 
 		Game.score.reset();
 
 		Game.resolve();
 
 		$screen.start && $screen.start.classList.add("hidden");
+
+	},
+
+	pause      () {
+
+		Game.status = "paused";
+
+		Game.timer.pause();
+
+	},
+
+	unpause    () {
+
+		Game.status = "ongoing";
+
+		Game.timer.unpause();
 
 	},
 
