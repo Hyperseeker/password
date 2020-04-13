@@ -30,7 +30,7 @@ let Password = {
 		let left = Password.length,
 			used = [],
 
-			cells = [...document.querySelectorAll("main .cell")],
+			cells = [...document.querySelectorAll("main kbd")],
 
 			pick = function () {
 
