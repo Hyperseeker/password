@@ -185,19 +185,19 @@ let KeyHandler = {
 	_pressed:  [],
 	_map:      [],
 
-	_special:  [
+	_special:  {
 
-		" ",
+		" ": Game.start,
 
-		"ArrowUp",
-		"ArrowDown",
-		"ArrowLeft",
-		"ArrowRight",
+		// "ArrowUp",
+		// "ArrowDown",
+		// "ArrowLeft",
+		// "ArrowRight",
 
-		"Ctrl",
-		"Meta"
+		"Ctrl": Game.settings,
+		"Meta": Game.settings
 
-	],
+	},
 
 	keydown (event) {
 
@@ -223,18 +223,9 @@ let KeyHandler = {
 
 			DOMNegotiator.negotiate(cell);
 
-		} else if (key.belongsTo(KeyHandler._special)) {
+		} else if (key.belongsTo(Object.keys(KeyHandler._special))) {
 
-			let handler = {
-
-				   " ": Game.start,
-
-				"Ctrl": Game.settings,
-				"Meta": Game.settings
-
-			};
-
-			handler[key]();
+			KeyHandler._special[key]();
 
 		} else {
 
