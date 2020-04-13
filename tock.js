@@ -182,28 +182,29 @@ Tock.prototype.stop = function () {
 };
 
 /**
-* Stop/start the clock.
+* Pause the clock.
 */
 Tock.prototype.pause = function () {
 	
-	if (this.running) {
+	if (!this.running) return;
 		
-		this.time.paused = this.left();
-		this.stop();
-		
-		return;
-		
-	};
+	this.time.paused = this.left();
+	this.stop();
 	
-	if (this.time.paused) {
+};
+
+/**
+* Unpause the clock.
+*/
+Tock.prototype.unpause = function () {
+	
+	if (!this.time.paused) return;
 		
-		this.countdown
-				? this._startCountdown(this.time.paused)
-				: this._startTimer(_delta(this.time.paused));
-		
-		this.time.paused = 0;
-		
-	}
+	this.countdown
+			? this._startCountdown(this.time.paused)
+			: this._startTimer(_delta(this.time.paused));
+	
+	this.time.paused = 0;
 	
 };
 
