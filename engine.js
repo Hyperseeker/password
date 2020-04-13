@@ -246,8 +246,11 @@ let KeyHandler = {
 		// "ArrowLeft",
 		// "ArrowRight",
 
-		"Ctrl": Game.settings,
-		"Meta": Game.settings
+		"Control": Game.settings,
+		"Meta":    Game.settings,
+
+		"Shift" () {},
+		"Alt"   () {}
 
 	},
 
