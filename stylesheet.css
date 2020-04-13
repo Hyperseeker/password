@@ -135,6 +135,7 @@ kbd {
 	font-family: monospace;
 	font-size:   var(--cell-size);
 	line-height: 1;
+	text-transform: uppercase;
 	color:       var(--theme);
 
 	transition: 0.1s all;

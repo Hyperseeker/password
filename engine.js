@@ -309,7 +309,7 @@ let DOMNegotiator = {
 
 	render () {
 		
-		for (cell of Password.current) cell.element.textContent = cell.key;
+		for (cell of Password.current) cell.element.querySelector("span").textContent = cell.key;
 
 	},
 
