@@ -26,4 +26,32 @@ Array.prototype.remove = function (item) {
 
 };
 
-String.prototype.belongsTo = function (array) { return array.includes(this.valueOf()); }
+Array.prototype.shuffle = function () {
+
+	for (let index = this.length - 1; index > 0; index--) {
+
+		let random = Math.floor(Math.random() * (index + 1));
+
+		[this[index], this[random]] = [this[random], this[index]];
+
+	};
+
+	return this;
+
+};
+
+Array.through = function (length = 0, from = 0, step = 1) {
+
+	let array = [];
+
+	if (!length) return array;
+
+	let left = length;
+	
+	while (left) array.last = from + ((length - left--) * step);
+
+	return array;
+
+};
+
+String.prototype.belongsTo = function (array) { return array.includes(this.valueOf()) };

@@ -14,6 +14,8 @@ let Password = {
 
 	length: 8,
 
+	type: "keyboard",
+
 	alphabet: [
 		"0", "1", "2", "3", "4", "5", "6", "7",
 		"8", "9", "A", "B", "C", "D", "E", "F",
@@ -23,36 +25,51 @@ let Password = {
 
 	solved () { return Password.current.every(cell => cell.solved) },
 
-	generate () {
+	generate: {
 
-		Password.current = [];
+		keyboard () {
 
-		let left = Password.length,
-			used = [],
+			Password.current = [];
 
-			cells = [...document.querySelectorAll("main kbd")],
+			let left = Password.length,
+				used = [],
 
-			pick = function () {
+				cells = [...document.querySelectorAll("main kbd")],
 
-				let key = Password.alphabet.pick();
+				pick = function () {
 
-				while (key.belongsTo(used)) key = Password.alphabet.pick();
-	
-				used.last = key;
+					let key = Password.alphabet.map(key => key.toLowerCase()).pick();
 
-				return key;
-
-			};
+					while (key.belongsTo(used)) key = Password.alphabet.map(key => key.toLowerCase()).pick();
 		
-		while (left) Password.current.last = {
+					used.last = key;
+
+					return key;
+
+				};
 			
-			key:     pick(),
-			element: cells[Password.length - left--],
-			solved:  false
-		
-		};
+			while (left--) Password.current.last = {
+				
+				key:     pick(),
+				element: cells[Password.length - left],
+				solved:  false
+			
+			};
 
-		KeyHandler._map = used;
+			KeyHandler._map = used;
+
+		},
+
+		order () {
+
+			Password.current = [];
+
+			let left = Password.length,
+				order = Array.through(Password.length, 1).shuffle();
+			
+			return order;
+
+		}
 
 	}
 
@@ -122,7 +139,7 @@ let Game = {
 
 		Game.status = "ongoing";
 
-		Password.generate();
+		Password.generate[Password.type]();
 
 		DOMNegotiator.reset();
 
@@ -234,7 +251,7 @@ let KeyHandler = {
 
 	keydown (event) {
 
-		let key = event.key.toUpperCase();
+		let key = event.key;
 
 		if (key.belongsTo(KeyHandler._map) && Game.status == "ongoing") {
 
@@ -270,7 +287,7 @@ let KeyHandler = {
 
 	keyup   (event) {
 
-		let key = event.key.toUpperCase();
+		let key = event.key;
 
 		if (key.belongsTo(KeyHandler._map)) {
 
