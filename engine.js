@@ -1,10 +1,10 @@
-let $main      = document.querySelector("main"),
+let $playfield = document.querySelector(".playfield"),
 	$score     = document.querySelector(".score"),
 	$countdown = document.querySelector(".countdown"),
 
-	$menu = {
+	$screen    = {
 
-		start: document.querySelector(".menu.start")
+		start: document.querySelector(".start")
 
 	};
 
@@ -138,7 +138,7 @@ let Game = {
 
 		Game.status = "lost";
 
-		$main.classList.add("failed");
+		$playfield.classList.add("failed");
 
 	},
 
@@ -160,7 +160,7 @@ let Game = {
 
 		Game.resolve();
 
-		$menu.start && $menu.start.remove();
+		$screen.start && $screen.start.classList.add("hidden");
 
 	},
 
@@ -265,7 +265,7 @@ let DOMNegotiator = {
 
 		for (cell of Password.current) cell.element.classList.remove("solved");
 
-		$main.classList.remove("failed");
+		$playfield.classList.remove("failed");
 			
 	},
 
