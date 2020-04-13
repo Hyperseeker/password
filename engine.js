@@ -178,7 +178,7 @@ let Game = {
 
 		};
 
-		if (Game.status.belongsTo(Object.keys(_stateHandler))) {
+		if (Game.status.belongsTo(_stateHandler.pipe(Object.keys))) {
 			
 			_stateHandler[Game.status]();
 
@@ -273,7 +273,7 @@ let KeyHandler = {
 
 			DOMNegotiator.negotiate(cell);
 
-		} else if (key.belongsTo(Object.keys(KeyHandler._special))) {
+		} else if (key.belongsTo(KeyHandler._special.pipe(Object.keys))) {
 
 			KeyHandler._special[key]();
 
