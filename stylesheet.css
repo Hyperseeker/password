@@ -132,11 +132,11 @@ kbd {
 	border: 3px solid currentColor;
 	border-radius: 0.175em;
 
-	font-family: monospace;
-	font-size:   var(--cell-size);
-	line-height: 1;
+	font-family:    monospace;
+	font-size:      var(--cell-size);
+	line-height:    1;
 	text-transform: uppercase;
-	color:       var(--theme);
+	color:          var(--theme);
 
 	transition: 0.1s all;
 
@@ -256,7 +256,7 @@ kbd.hotkey {
 
 	opacity: 0;
 
-	transition: 0.5s all;
+	transition: opacity 0.5s;
 
 	z-index: 10;
 
