@@ -48,10 +48,10 @@ let Password = {
 
 				};
 			
-			while (left--) Password.current.last = {
+			while (left) Password.current.last = {
 				
 				key:     pick(),
-				element: cells[Password.length - left],
+				element: cells[Game.difficulty.length - left--],
 				solved:  false
 			
 			};
