@@ -138,7 +138,7 @@ kbd {
 	text-transform: uppercase;
 	color:          var(--theme);
 
-	transition: 0.1s all;
+	transition: transform 0.1s, opacity 0.175s;
 
 	box-sizing: border-box;
 
@@ -161,6 +161,8 @@ kbd::before {
 	opacity: 0.2;
 
 }
+
+kbd span { transition: opacity 0.175s; }
 
 kbd.solved  { color: var(--solved); }
 
@@ -269,3 +271,8 @@ kbd.hotkey {
 }
 
 .playfield main .score.visible { opacity: 0.075; }
+
+.playfield.paused kbd                 { opacity: 0.5; }
+.playfield.paused kbd span            { opacity: 0;   }
+.playfield.paused main .score.visible { opacity: 0.5; }
+.playfield.paused header .timer       { opacity: 0.5; }
