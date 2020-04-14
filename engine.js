@@ -12,8 +12,6 @@ let Password = {
 
 	current: [],
 
-	length: 8,
-
 	type: "keyboard",
 
 	alphabet: [
@@ -33,7 +31,7 @@ let Password = {
 
 			Password.current = [];
 
-			let left = Password.length,
+			let left = Game.difficulty.length,
 				used = [],
 
 				cells = [...document.querySelectorAll("main kbd")],
@@ -66,8 +64,8 @@ let Password = {
 
 			Password.current = [];
 
-			let left = Password.length,
-				order = Array.through(Password.length, 1).shuffle();
+			let left = Game.difficulty.length,
+				order = Array.through(Game.difficulty.length, 1).shuffle();
 			
 			return order;
 
@@ -83,7 +81,19 @@ let Game = {
 
 	timer: null,
 
-	difficulty: 5000,
+	difficulty: {
+
+		time:   5,
+		length: 8,
+
+		set: {
+
+			time   (value) { Game.difficulty.time   = value },
+			length (value) { Game.difficulty.length = value }
+
+		}
+
+	},
 
 	score: {
 
@@ -111,7 +121,7 @@ let Game = {
 	tick       () {
 
 		let elapsed    = Game.timer.left(),
-			total      = Game.difficulty,
+			total      = Game.difficulty.time.ms(),
 
 			percentage = (elapsed / total) * 100,
 			
@@ -149,7 +159,7 @@ let Game = {
 
 		Game.timer.time.base
 					? Game.timer.restart()
-					: Game.timer.start(Game.difficulty);
+					: Game.timer.start(Game.difficulty.time.ms());
 
 	},
 
@@ -163,7 +173,7 @@ let Game = {
 
 	succeed    () {
 
-		let score = Password.length / (Game.difficulty / 1000) * 20;
+		let score = Game.difficulty.length / Game.difficulty.time * 20;
 
 		Game.score.add(score);
 
@@ -218,7 +228,8 @@ let Game = {
 
 	foul       () {
 
-		let penalty = Game.difficulty / 10;
+		// * penalty == (<time_in_ms> / 10) == (<time_in_s> * 100)
+		let penalty = Game.difficulty.time * 100;
 
 		Game.timer.reduce(penalty);
 
