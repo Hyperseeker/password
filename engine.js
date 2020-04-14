@@ -199,6 +199,8 @@ let Game = {
 
 		Game.timer.pause();
 
+		$playfield.classList.add("paused");
+
 	},
 
 	unpause    () {
@@ -206,6 +208,8 @@ let Game = {
 		Game.status = "ongoing";
 
 		Game.timer.unpause();
+
+		$playfield.classList.remove("paused");
 
 	},
 
