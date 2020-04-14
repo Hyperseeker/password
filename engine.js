@@ -149,6 +149,8 @@ let Game = {
 
 	resolve    () {
 
+		KeyHandler._pressed = [];
+
 		Game.status = "ongoing";
 
 		Password.generate[Password.type]();
@@ -277,8 +279,6 @@ let KeyHandler = {
 
 			if (Password.solved()) {
 
-				KeyHandler._pressed = [];
-				
 				Game.succeed();
 
 				return;
