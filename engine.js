@@ -185,25 +185,6 @@ let Game = {
 
 	start      () {
 
-		let _stateHandler = {
-
-			"ongoing": Game.pause,
-			"paused":  Game.unpause
-
-		};
-
-		if (Game.status.belongsTo(_stateHandler.pipe(Object.keys))) {
-			
-			_stateHandler[Game.status]();
-
-			return;
-		
-		} else if (Game.status != "initial" && Game.status != "lost") {
-			
-			return;
-		
-		};
-
 		Game.score.reset();
 
 		Game.resolve();
@@ -252,7 +233,21 @@ let KeyHandler = {
 
 	_special:  {
 
-		" ": Game.start,
+		" " () {
+
+			let handler = {
+
+				"initial": Game.start,
+				"lost":    Game.start,
+
+				"ongoing": Game.pause,
+				"paused":  Game.unpause
+
+			};
+
+			handler[Game.status]();
+
+		},
 
 		// "ArrowUp",
 		// "ArrowDown",
