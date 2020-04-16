@@ -42,11 +42,8 @@ Array.prototype.shuffle = function () {
 
 Array.through = function (length = 0, from = 0, step = 1) {
 
-	let array = [];
-
-	if (!length) return array;
-
-	let left = length;
+	let array = [],
+		left  = length;
 	
 	while (left) array.last = from + ((length - left--) * step);
 
