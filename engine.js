@@ -220,6 +220,10 @@ let Game = {
 
 		Game.timer.reduce(penalty);
 
+		$playfield.classList.add("foul");
+
+		window.setTimeout(() => $playfield.classList.remove("foul"), 125);
+
 	},
 
 	settings   () {},
