@@ -101,6 +101,8 @@ let Game = {
 
 		highest: 0,
 
+		countup: null,
+
 		add (value) {
 			
 			Game.score.current += value;
@@ -141,6 +143,15 @@ let Game = {
 			callback: Game.tick,
 			complete: Game.lose
 
+		});
+
+		Game.score.countup = new CountUp($score, 0, {
+			
+			duration: 1,
+			
+			separator: " "
+		
+		});
 
 	},
 
@@ -337,9 +348,9 @@ let DOMNegotiator = {
 
 	score () {
 
-		$score.textContent = Game.score.current;
-
 		if (Game.score.current) $score.classList.add("visible");
+
+		Game.score.countup.update(Game.score.current);
 
 	},
 
