@@ -133,7 +133,7 @@ let Game = {
 
 	initialize () {
 
-		let options = {
+		Game.timer = new Tock({
 
 			countdown: true,
 			interval:  16,
@@ -141,10 +141,7 @@ let Game = {
 			callback: Game.tick,
 			complete: Game.lose
 
-		};
 
-		Game.timer = new Tock(options);
-	
 	},
 
 	resolve    () {
