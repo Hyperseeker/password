@@ -282,9 +282,21 @@ kbd.hotkey {
 
 .playfield main .score.visible { opacity: 0.075; }
 
-.playfield main .shader { --shade: var(--countdown); }
+.playfield.foul main .shader {
 
-.playfield.foul main .shader { opacity: 1; }
+	--shade: var(--countdown);
+	
+	opacity: 1;
+
+}
+
+.playfield.paused main .shader {
+
+	--shade: hsl(0, 0%, 100%, 0.5);
+	
+	opacity: 1;
+
+}
 
 .playfield.paused main kbd            { opacity: 0.5;  }
 .playfield.paused main kbd span       { opacity: 0;    }
