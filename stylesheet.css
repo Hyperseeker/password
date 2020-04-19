@@ -61,8 +61,8 @@ article main,
 article header,
 article footer {
 
-	display:        flex;
-	align-items:    center;
+	display:     flex;
+	align-items: center;
 
 }
 
