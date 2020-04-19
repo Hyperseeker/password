@@ -295,7 +295,7 @@ kbd.hotkey {
 
 .playfield.foul main .shader { opacity: 1; }
 
-.playfield.paused kbd                 { opacity: 0.5; }
-.playfield.paused kbd span            { opacity: 0;   }
-.playfield.paused main .score.visible { opacity: 0.5; }
-.playfield.paused header .timer       { opacity: 0.5; }
+.playfield.paused main kbd            { opacity: 0.5;  }
+.playfield.paused main kbd span       { opacity: 0;    }
+.playfield.paused main .score.visible { opacity: 0.5;  }
+.playfield.paused header .timer       { opacity: 0.5;  }
