@@ -251,6 +251,13 @@ kbd.hotkey {
 
 .playfield footer span { display: none; }
 .playfield.failed footer .startover { display: flex; }
+.playfield:not(.failed):not(.paused) footer .pause {
+
+	display: flex;
+
+	opacity: 0.33;
+
+}
 
 .playfield main kbd { z-index: 11; }
 
