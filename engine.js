@@ -304,7 +304,7 @@ let KeyHandler = {
 
 			KeyHandler._special[key]();
 
-		} else {
+		} else if (Game.status == "ongoing") {
 
 			Game.foul();
 
