@@ -59,7 +59,8 @@ body {
 article,
 article main,
 article header,
-article footer {
+article footer,
+article footer * {
 
 	display:     flex;
 	align-items: center;
@@ -123,7 +124,7 @@ article header {
 
 article header * + * { margin-block-start: 1em; }
 
-article footer {
+article footer * {
 
 	font-size:   1.25em;
 
@@ -247,19 +248,8 @@ kbd.hotkey {
 
 .playfield.failed main kbd:not(.solved) { color: var(--countdown); }
 
-.playfield footer {
-
-	opacity: 0;
-	pointer-events: none;
-
-}
-
-.playfield.failed footer {
-	
-	opacity: 1;
-	pointer-events: initial;
-
-}
+.playfield footer span { display: none; }
+.playfield.failed footer .startover { display: flex; }
 
 .playfield main kbd { z-index: 11; }
 
@@ -299,3 +289,4 @@ kbd.hotkey {
 .playfield.paused main kbd span       { opacity: 0;    }
 .playfield.paused main .score.visible { opacity: 0.5;  }
 .playfield.paused header .timer       { opacity: 0.5;  }
+.playfield.paused footer .unpause     { display: flex; }
