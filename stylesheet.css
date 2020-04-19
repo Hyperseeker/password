@@ -93,23 +93,6 @@ article main {
 
 }
 
-article main .shader {
-
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	right: 0;
-
-	box-shadow: inset 0 0 5em var(--shade);
-
-	transition: 0.175s opacity;
-
-	opacity: 0;
-	pointer-events: none;
-
-}
-
 article header,
 article footer { flex-basis: 12.5%; }
 
@@ -127,6 +110,26 @@ article footer * {
 	font-size:   1.25em;
 
 	transition:  0.33s all;
+
+}
+
+
+/*  # LAYOUT :: Shader  */
+
+article main .shader {
+
+	position: absolute;
+	top:      0;
+	bottom:   0;
+	left:     0;
+	right:    0;
+
+	box-shadow: inset 0 0 5em var(--shade, transparent);
+
+	transition: 0.175s opacity;
+
+	opacity: 0;
+	pointer-events: none;
 
 }
 
