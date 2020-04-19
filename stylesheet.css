@@ -95,8 +95,6 @@ article main {
 
 article main .shader {
 
-	--shade: white;
-
 	position: absolute;
 	top: 0;
 	bottom: 0;
