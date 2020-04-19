@@ -159,7 +159,7 @@ kbd {
 	text-transform: uppercase;
 	color:          var(--theme);
 
-	transition: transform 0.1s, opacity 0.175s;
+	transition: transform 0.1s, opacity 0.175s, color 0.175s;
 
 	box-sizing: border-box;
 
