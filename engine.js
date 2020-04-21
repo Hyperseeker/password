@@ -265,11 +265,6 @@ let KeyHandler = {
 
 		},
 
-		// "ArrowUp",
-		// "ArrowDown",
-		// "ArrowLeft",
-		// "ArrowRight",
-
 		"Control": Game.settings,
 		"Meta":    Game.settings,
 
