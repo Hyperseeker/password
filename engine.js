@@ -268,8 +268,8 @@ let KeyHandler = {
 		"Control": Game.settings,
 		"Meta":    Game.settings,
 
-		"Shift" () {},
-		"Alt"   () {}
+		"Shift" () { /* noop */ },
+		"Alt"   () { /* noop */ }
 
 	},
 
