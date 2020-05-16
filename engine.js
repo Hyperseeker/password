@@ -93,6 +93,8 @@ let Game = {
 		},
 
 		reset () {
+
+			Game.score.highest = Math.max(Game.score.current, Game.score.highest);
 			
 			Game.score.current = 0;
 		
