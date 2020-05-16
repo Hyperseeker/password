@@ -9,59 +9,106 @@
 
 	<link rel="stylesheet" href="stylesheet.css">
 
+	<script src="libs/isMobile.min.js"></script>
+
 </head>
 <body>
 
-	<div class="menu start">
+	<article class="start">
 
-		<div class="title">
+		<header></header>
 
-			<div class="itself">password</div>
+		<main>
+
+			<div class="title">password</div>
 			<div class="tagline">a game about key presses and reaction time</div>
 
-		</div>
+		</main>
 
-		<div class="prompt">
+		<footer>
 
-			Press <span class="cell">Space</span> to start
+			<span class="start">Press <kbd class="hotkey">Space</kbd> to start</span>
 
-		</div>
+		</footer>
 		
-	</div>
+	</article>
 
-	<header>
+	<article class="settings hidden">
 
-		<div class="timer">
+		<header></header>
+
+		<main>
+
+			<div class="title">password</div>
+			<div class="tagline">a game about key presses and reaction time</div>
+
+		</main>
+
+		<footer>
+
+			Press <kbd class="hotkey">Space</kbd> to start
+
+		</footer>
+		
+	</article>
+
+	<article class="playfield">
+
+		<header>
 	
-			<div class="countdown"></div>
+			<div class="timer">
+		
+				<div class="countdown"></div>
+		
+			</div>
+		
+		</header>
 	
-		</div>
+		<main>
 
-		<div class="score">0</div>
+			<div class="shader"></div>
 
-	</header>
+			<div class="score">0</div>
+	
+			<kbd><span></span></kbd>
+			<kbd><span></span></kbd>
 
-	<main>
+			<div class="break small"></div>
 
-		<div class="cell"></div>
-		<div class="cell"></div>
-		<div class="cell"></div>
-		<div class="cell"></div>
-		<div class="cell"></div>
-		<div class="cell"></div>
-		<div class="cell"></div>
-		<div class="cell"></div>
+			<kbd><span></span></kbd>
+			<kbd><span></span></kbd>
 
-	</main>
+			<div class="break medium"></div>
 
-	<footer>
+			<kbd><span></span></kbd>
+			<kbd><span></span></kbd>
+			
+			<div class="break small"></div>
 
-		Press <span class="cell">Space</span> to start over
+			<kbd><span></span></kbd>
+			<kbd><span></span></kbd>
 
-	</footer>
+		</main>
+	
+		<footer>
+	
+			<span class="startover">Press <kbd class="hotkey">Space</kbd> to start over</span>
 
-	<script src="supplementary.js"></script>
-	<script src="tock.js"></script>
+			<span class="pause">Press <kbd class="hotkey">Space</kbd> to pause</span>
+
+			<span class="unpause">Press <kbd class="hotkey">Space</kbd> to unpause</span>
+	
+		</footer>
+
+	</article>
+
+	<script src="libs/supplementary.js"></script>
+
+	<script src="libs/tock.js"></script>
+	<script src="libs/countup.js"></script>
+	<script src="libs/tinygesture.js"></script>
+	<script src="libs/InteractionHandler.js"></script>
+
 	<script src="engine.js"></script>
 	
 </body>

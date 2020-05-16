@@ -1,10 +1,10 @@
-let $main      = document.querySelector("main"),
+let $playfield = document.querySelector(".playfield"),
 	$score     = document.querySelector(".score"),
 	$countdown = document.querySelector(".countdown"),
 
-	$menu = {
+	$screen    = {
 
-		start: document.querySelector(".menu.start")
+		start: document.querySelector(".start")
 
 	};
 
@@ -12,45 +12,45 @@ let Password = {
 
 	current: [],
 
-	length: 8,
+	type: isMobile(navigator).any ? "order" : "keyboard",
 
 	alphabet: [
+
 		"0", "1", "2", "3", "4", "5", "6", "7",
 		"8", "9", "A", "B", "C", "D", "E", "F",
 		"G", "H", "J", "K", "M", "N", "P", "Q",
 		"R", "S", "T", "V", "W", "X", "Y", "Z"
+
 	],
 
 	solved () { return Password.current.every(cell => cell.solved) },
 
-	generate () {
+	generate: {
 
-		Password.current = [];
+		keyboard () {
 
-		let left = Password.length,
-			used = [],
+			let used = Password.alphabet
+									.map(key => key.toLowerCase())
+									.slice(0, Game.difficulty.length)
+									.shuffle(),
 
-			cells = [...document.querySelectorAll("main .cell")],
+				cells = [...document.querySelectorAll("main kbd")];
 
-			pick = function () {
+			Password.current = used.map((key, index) => { return {
 
-				let key = Password.alphabet.pick();
+				key,
+				element: cells[index],
+				solved:  false
 
-				while (key.belongsTo(used)) key = Password.alphabet.pick();
-	
-				used.last = key;
+			} });
 
-				return key;
+		},
 
-			};
-		
-		while (left) Password.current.last = {
-			
-			key:     pick(),
-			element: cells[Password.length - left--],
-			solved:  false
-		
-		};
+		order () {
+
+			Password.current = Array.through(Game.difficulty.length, 1).shuffle();
+
+		}
 
 	}
 
@@ -62,41 +62,51 @@ let Game = {
 
 	timer: null,
 
-	difficulty: 5000,
+	difficulty: {
+
+		time:   5,
+		length: 8,
+
+		set: {
+
+			time   (value) { Game.difficulty.time   = value },
+			length (value) { Game.difficulty.length = value }
+
+		}
+
+	},
 
 	score: {
 
 		current: 0,
 
-		_adjust () {
-			
-			$score.textContent = Game.score.current;
+		highest: 0,
 
-			if (Game.score.current) $score.classList.add("visible");
-		
-		},
+		countup: null,
 
 		add (value) {
 			
 			Game.score.current += value;
 
-			Game.score._adjust();
-		
+			DOMNegotiator.score();
+
 		},
 
 		reset () {
+
+			Game.score.highest = Math.max(Game.score.current, Game.score.highest);
 			
 			Game.score.current = 0;
 		
-			Game.score._adjust();
+			DOMNegotiator.score();
 
 		}
 	},
 
-	tick () {
+	tick       () {
 
 		let elapsed    = Game.timer.left(),
-			total      = Game.difficulty,
+			total      = Game.difficulty.time.ms(),
 
 			percentage = (elapsed / total) * 100,
 			
@@ -108,96 +118,209 @@ let Game = {
 
 	initialize () {
 
-		let options = {
+		Game.timer = new Tock({
 
 			countdown: true,
+			interval:  16,
 
 			callback: Game.tick,
 			complete: Game.lose
 
-		};
+		});
 
-		Game.timer = new Tock(options);
-	
+		Game.score.countup = new CountUp($score, 0, {
+			
+			duration: 1,
+			
+			separator: " "
+		
+		});
+
 	},
 
-	resolve () {
+	resolve    () {
+
+		ActionHandler._pressed = [];
+
+		Password.generate[Password.type]();
 
 		DOMNegotiator.reset();
-		
-		Game.status = "ongoing";
-
-		Password.generate();
 
 		DOMNegotiator.render();
 
 		Game.timer.time.base
 					? Game.timer.restart()
-					: Game.timer.start(Game.difficulty);
+					: Game.timer.start(Game.difficulty.time.ms());
+	
+		Game.status = "ongoing";
 
 	},
 
-	lose () {
+	lose       () {
+
+		$playfield.classList.add("failed");
 
 		Game.status = "lost";
 
 		$main.classList.add("failed");
 
-	},
+  },
 
-	succeed () {
+	succeed    () {
 
-		Game.score.add(100);
+		let score = Game.difficulty.length / Game.difficulty.time * 20;
+
+		Game.score.add(score);
 
 		Game.resolve();
 
 	},
+
+	start      () {
+
+		Game.score.reset();
+
+		Game.resolve();
+
+		$screen.start && $screen.start.classList.add("hidden");
+
+	},
+
+	pause      () {
+
+		Game.timer.pause();
+
+		$playfield.classList.add("paused");
+
+		Game.status = "paused";
+
+	},
+
+	unpause    () {
+
+		Game.timer.unpause();
+
+		$playfield.classList.remove("paused");
+
+		Game.status = "ongoing";
+
+	},
+
+	foul       () {
+
+		// * penalty == (<time_in_ms> / 10) == (<time_in_s> * 100)
+		let penalty = Game.difficulty.time * 100;
+
+		Game.timer.reduce(penalty);
+
+		$playfield.classList.add("foul");
+
+		window.setTimeout(() => $playfield.classList.remove("foul"), 125);
+
+	},
+
+	settings   () {},
+
+	load       () {},
 	
-	save () {}
+	save       () {}
 
 };
 
-let KeyHandler = function (event) {
+let ActionHandler = {
 
-	let key = event.key.toUpperCase();
+	_pressed:  [],
 
-	if (Game.status == "initial") {
+	contextual () {
 
-		if (key != " ") return;
+		let action = {
 
-		Game.resolve();
+			"initial": Game.start,
+			"lost":    Game.start,
 
-		$menu.start.remove();
+			"ongoing": Game.pause,
+			"paused":  Game.unpause
 
-	};
+		};
 
-	if (Game.status == "lost") {
+		action[Game.status]();
 
-		if (key != " ") return;
+	},
 
-		Game.resolve();
+	swipeup    () {
+
+		let action = {
+
+			"initial": Game.start,
+			"lost":    Game.start,
+
+			"ongoing": function () {},
+			"paused":  Game.unpause
+
+		};
+
+		action[Game.status]();
+
+	},
+
+	swipedown  () {
+
+		if (Game.status == "ongoing") Game.pause();
+
+	},
+
+	keydown   (event) {
+
+		let key     = event.key,
+			hotkeys = handler.registry.keydown.map(response => response.condition && response.condition.key && response.condition.key),
+			isHotkey = key.belongsTo(hotkeys) || InteractionHandler.getAliasForKey(key).belongsTo(hotkeys);
 		
-		Game.score.reset();
+		if (isHotkey) return;
 
-	};
+		let cell = Password.current.find(cell => cell.key == key);
 
-	let cell = Password.current.find(cell => cell.key == key);
+		if (Game.status == "ongoing") {
 
-	if (!cell && key.belongsTo(Password.alphabet)) {
+			if (cell) {
+
+				cell.solved = true;
+
+				if (Password.solved()) {
+
+					Game.succeed();
+
+					return;
+
+				};
+
+				ActionHandler._pressed.last = key;
+
+				DOMNegotiator.negotiate(cell);
+
+			} else {
+
+				Game.foul();
+
+			};
+
+		};
+
+	},
+
+	keyup      (event) {
+
+		let key  = event.key,
+			cell = Password.current.find(cell => cell.key == key);
+
+		if (cell) {
+
+			ActionHandler._pressed.remove(key);
+
+			DOMNegotiator.negotiate(cell);
 		
-		Game.timer.reduce(500);
-		
-		return;
-		
+		};
+
 	}
-	
-	if (cell.solved) return;
-	
-	cell.solved = true;
-
-	DOMNegotiator.negotiate(cell);
-
-	if (Password.solved()) Game.succeed();
 
 };
 
@@ -205,7 +328,7 @@ let DOMNegotiator = {
 
 	render () {
 		
-		for (cell of Password.current) cell.element.textContent = cell.key;
+		for (cell of Password.current) cell.element.querySelector("span").textContent = cell.key;
 
 	},
 
@@ -213,24 +336,56 @@ let DOMNegotiator = {
 
 		for (cell of Password.current) cell.element.classList.remove("solved");
 
-		$main.classList.remove("failed");
+		$playfield.classList.remove("failed");
 			
+	},
+
+	score () {
+
+		if (Game.score.current) $score.classList.add("visible");
+
+		Game.score.countup.update(Game.score.current);
+
 	},
 
 	negotiate (cell) {
 
-		cell.element.classList.add("solved");
+		let pressed = cell.key.belongsTo(ActionHandler._pressed);
+
+		if (pressed) {
+
+			cell.element.classList.add("pressed");
+
+			cell.solved
+				? cell.element.classList.add("solved")
+				: cell.element.classList.remove("solved");
+
+		} else {
+
+			cell.element.classList.remove("pressed");
+
+		};
 
 	}
 
 };
 
-let events = [
+let gesture = new TinyGesture();
 
-	{ type: "keypress", 		handler: KeyHandler 	 },
-	{ type: "DOMContentLoaded", handler: Game.initialize },
-	{ type: "beforeunload", 	handler: Game.save 		 }
+let handler = new InteractionHandler();
 
-];
+handler.register("keydown", { key: "space" }, ActionHandler.contextual);
+handler.register("keydown", { key: "mod"   }, Game.settings);
 
-for ({type, handler} of events) document.addEventListener(type, handler);
+// * prevent fouls on modifier keys
+handler.register("keydown", { key: "shift" }, function () { /* noop */ });
+handler.register("keydown", { key: "alt"   }, function () { /* noop */ });
+
+handler.register("keydown",          null,    ActionHandler.keydown);
+handler.register("keyup",            null,    ActionHandler.keyup);
+
+handler.register("DOMContentLoaded", null,    Game.initialize);
+handler.register("beforeunload",     null,    Game.save);
+
+handler.register("swipeup",          null,    ActionHandler.swipeup);
+handler.register("swipedown",        null,    ActionHandler.swipedown);
