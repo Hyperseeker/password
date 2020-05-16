@@ -162,7 +162,9 @@ let Game = {
 
 		Game.status = "lost";
 
-	},
+		$main.classList.add("failed");
+
+  },
 
 	succeed    () {
 
