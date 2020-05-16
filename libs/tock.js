@@ -44,9 +44,7 @@ let Tock = function (options) {
 		
 	};
 
-	let result = Object.assign(defaults, options);
-	
-	Object.assign(this, result);
+	Object.assign(this, defaults, options);
 	
 	if (!this instanceof Tock) return new Tock(options);
 	
