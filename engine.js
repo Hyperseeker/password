@@ -307,7 +307,7 @@ let ActionHandler = {
 
 		if (cell) {
 
-			ActionHandler._pressed.remove(key);
+			if (key.belongsTo(ActionHandler._pressed)) ActionHandler._pressed.remove(key);
 
 			DOMNegotiator.negotiate(cell);
 		
