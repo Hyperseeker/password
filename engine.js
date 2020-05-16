@@ -29,34 +29,20 @@ let Password = {
 
 		keyboard () {
 
-			Password.current = [];
+			let used = Password.alphabet
+									.map(key => key.toLowerCase())
+									.slice(0, Game.difficulty.length)
+									.shuffle(),
 
-			let left = Game.difficulty.length,
-				used = [],
+				cells = [...document.querySelectorAll("main kbd")];
 
-				cells = [...document.querySelectorAll("main kbd")],
+			Password.current = used.map((key, index) => { return {
 
-				pick = function () {
-
-					let key = Password.alphabet.map(key => key.toLowerCase()).pick();
-
-					while (key.belongsTo(used)) key = Password.alphabet.map(key => key.toLowerCase()).pick();
-		
-					used.last = key;
-
-					return key;
-
-				};
-			
-			while (left) Password.current.last = {
-				
-				key:     pick(),
-				element: cells[Game.difficulty.length - left--],
+				key,
+				element: cells[index],
 				solved:  false
-			
-			};
 
-			KeyHandler._map = used;
+			} });
 
 		},
 
