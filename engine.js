@@ -12,7 +12,7 @@ let Password = {
 
 	current: [],
 
-	type: "keyboard",
+	type: isMobile(navigator).any ? "order" : "keyboard",
 
 	alphabet: [
 
