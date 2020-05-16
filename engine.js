@@ -138,7 +138,7 @@ let Game = {
 
 	resolve    () {
 
-		KeyHandler._pressed = [];
+		ActionHandler._pressed = [];
 
 		Password.generate[Password.type]();
 
@@ -223,79 +223,94 @@ let Game = {
 
 };
 
-let KeyHandler = {
+let ActionHandler = {
 
 	_pressed:  [],
 
-	_special:  {
+	contextual () {
 
-		" " () {
+		let action = {
 
-			let handler = {
+			"initial": Game.start,
+			"lost":    Game.start,
 
-				"initial": Game.start,
-				"lost":    Game.start,
+			"ongoing": Game.pause,
+			"paused":  Game.unpause
 
-				"ongoing": Game.pause,
-				"paused":  Game.unpause
+		};
 
-			};
+		action[Game.status]();
 
-			handler[Game.status]();
+	},
 
-		},
+	swipeup () {
 
-		"Control": Game.settings,
-		"Meta":    Game.settings,
+		let action = {
 
-		"Shift" () { /* noop */ },
-		"Alt"   () { /* noop */ }
+			"initial": Game.start,
+			"lost":    Game.start,
+
+			"ongoing": function () {},
+			"paused":  Game.unpause
+
+		};
+
+		action[Game.status]();
+
+	},
+
+	swipedown () {
+
+		if (Game.status == "ongoing") Game.pause();
 
 	},
 
 	keydown (event) {
 
-		let key = event.key;
+		let key     = event.key,
+			hotkeys = handler.registry.keydown.map(response => response.condition && response.condition.key && response.condition.key),
+			isHotkey = key.belongsTo(hotkeys) || InteractionHandler.getAliasForKey(key).belongsTo(hotkeys);
+		
+		if (isHotkey) return;
 
-		if (key.belongsTo(KeyHandler._map) && Game.status == "ongoing") {
+		let cell = Password.current.find(cell => cell.key == key);
 
-			let cell = Password.current.find(cell => cell.key == key);
+		if (Game.status == "ongoing") {
 
-			cell.solved = true;
+			if (cell) {
 
-			if (Password.solved()) {
+				cell.solved = true;
 
-				Game.succeed();
+				if (Password.solved()) {
 
-				return;
-			
+					Game.succeed();
+
+					return;
+
+				};
+
+				ActionHandler._pressed.last = key;
+
+				DOMNegotiator.negotiate(cell);
+
+			} else {
+
+				Game.foul();
+
 			};
 
-			KeyHandler._pressed.last = key;
-
-			DOMNegotiator.negotiate(cell);
-
-		} else if (key.belongsTo(KeyHandler._special.pipe(Object.keys))) {
-
-			KeyHandler._special[key]();
-
-		} else if (Game.status == "ongoing") {
-
-			Game.foul();
-
-		}
+		};
 
 	},
 
 	keyup   (event) {
 
-		let key = event.key;
+		let key  = event.key,
+			cell = Password.current.find(cell => cell.key == key);
 
-		if (key.belongsTo(KeyHandler._map)) {
+		if (cell) {
 
-			let cell = Password.current.find(cell => cell.key == key);
-		
-			KeyHandler._pressed.remove(key);
+			ActionHandler._pressed.remove(key);
 
 			DOMNegotiator.negotiate(cell);
 		
@@ -331,7 +346,7 @@ let DOMNegotiator = {
 
 	negotiate (cell) {
 
-		let pressed = cell.key.belongsTo(KeyHandler._pressed);
+		let pressed = cell.key.belongsTo(ActionHandler._pressed);
 
 		if (pressed) {
 
@@ -351,15 +366,22 @@ let DOMNegotiator = {
 
 };
 
-let events = [
+let gesture = new TinyGesture();
 
-	{ type: "keydown", 			handler: KeyHandler.keydown },
-	{ type: "keyup", 			handler: KeyHandler.keyup   },
+let handler = new InteractionHandler();
 
-	{ type: "DOMContentLoaded", handler: Game.initialize    },
+handler.register("keydown", { key: "space" }, ActionHandler.contextual);
+handler.register("keydown", { key: "mod"   }, Game.settings);
 
-	{ type: "beforeunload", 	handler: Game.save 		    }
+// * prevent fouls on modifier keys
+handler.register("keydown", { key: "shift" }, function () { /* noop */ });
+handler.register("keydown", { key: "alt"   }, function () { /* noop */ });
 
-];
+handler.register("keydown",          null,    ActionHandler.keydown);
+handler.register("keyup",            null,    ActionHandler.keyup);
 
-for ({type, handler} of events) document.addEventListener(type, handler);
+handler.register("DOMContentLoaded", null,    Game.initialize);
+handler.register("beforeunload",     null,    Game.save);
+
+handler.register("swipeup",          null,    ActionHandler.swipeup);
+handler.register("swipedown",        null,    ActionHandler.swipedown);
