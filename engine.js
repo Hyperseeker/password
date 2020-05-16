@@ -48,12 +48,7 @@ let Password = {
 
 		order () {
 
-			Password.current = [];
-
-			let left = Game.difficulty.length,
-				order = Array.through(Game.difficulty.length, 1).shuffle();
-			
-			return order;
+			Password.current = Array.through(Game.difficulty.length, 1).shuffle();
 
 		}
 
