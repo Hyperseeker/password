@@ -18,7 +18,7 @@ Object.defineProperty(Array.prototype, 'last', {
 
 Array.prototype.remove = function (item) {
 
-	if (!this.includes(item)) return;
+	if (!this.includes(item)) console.warn(`Tried to remove item ${item} from array ${this} but array does not contain item.`);
 
 	this.splice(this.indexOf(item), 1);
 
