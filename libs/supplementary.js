@@ -42,12 +42,7 @@ Array.prototype.shuffle = function () {
 
 Array.through = function (length = 0, from = 0, step = 1) {
 
-	let array = [],
-		left  = length;
-	
-	while (left) array.last = from + ((length - left--) * step);
-
-	return array;
+	return Array.from("0".repeat(length)).map((item, index) => from + (index * step));
 
 };
 
