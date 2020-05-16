@@ -13,7 +13,7 @@
 */
 let delta = function (source = 0) { return Date.now() - source };
 
-var Tock = function (options) {
+let Tock = function (options) {
 	
 	let defaults = {
 		
