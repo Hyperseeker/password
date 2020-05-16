@@ -17,9 +17,9 @@ let Password = {
 	alphabet: [
 
 		"0", "1", "2", "3", "4", "5", "6", "7",
-		"8", "9", "A", "B", "C", "D", "E", "F",
-		"G", "H", "J", "K", "M", "N", "P", "Q",
-		"R", "S", "T", "V", "W", "X", "Y", "Z"
+		"8", "9", "a", "b", "c", "d", "e", "f",
+		"g", "h", "j", "k", "m", "n", "p", "q",
+		"r", "s", "t", "v", "w", "x", "y", "z"
 
 	],
 
@@ -30,7 +30,6 @@ let Password = {
 		keyboard () {
 
 			let used = Password.alphabet
-									.map(key => key.toLowerCase())
 									.slice(0, Game.difficulty.length)
 									.shuffle(),
 
@@ -271,7 +270,7 @@ let ActionHandler = {
 
 	keydown   (event) {
 
-		let key     = event.key,
+		let key     = event.key.toLowerCase(),
 			hotkeys = handler.registry.keydown.map(response => response.condition && response.condition.key && response.condition.key),
 			isHotkey = key.belongsTo(hotkeys) || InteractionHandler.getAliasForKey(key).belongsTo(hotkeys);
 		
