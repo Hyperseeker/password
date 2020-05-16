@@ -11,7 +11,7 @@
 /**
 * Called by Tock internally to determine `source`'s offset from current real time
 */
-_delta = function (source = 0) { return Date.now() - source };
+let delta = function (source = 0) { return Date.now() - source };
 
 var Tock = function (options) {
 	
@@ -79,7 +79,7 @@ Tock.prototype._tick = function () {
 		
 	};
 	
-	var diff              = _delta(this.time.started) - this.time.current,
+	var diff              = delta(this.time.started) - this.time.current,
 		untilNextInterval = this.interval - Math.max(diff, 0);
 	
 	if (untilNextInterval <= 0) {
@@ -161,7 +161,7 @@ Tock.prototype.start = function (time = 0) {
 
 	this.countdown
 			? this._startCountdown(time)
-			: this._startTimer(_delta(time));
+			: this._startTimer(delta(time));
 	
 };
 
@@ -177,7 +177,7 @@ Tock.prototype.stop = function () {
 	
 	this.time.ended = this.countdown
 							? this.duration - this.time.current
-							: _delta(this.time.started);
+							: delta(this.time.started);
 	
 };
 
@@ -202,7 +202,7 @@ Tock.prototype.unpause = function () {
 		
 	this.countdown
 			? this._startCountdown(this.time.paused)
-			: this._startTimer(_delta(this.time.paused));
+			: this._startTimer(delta(this.time.paused));
 	
 	this.time.paused = 0;
 	
@@ -216,7 +216,7 @@ Tock.prototype.left = function () {
 	
 	if (!this.running) return this.time.paused || this.time.ended;
 	
-	let now  = _delta(this.time.started),
+	let now  = delta(this.time.started),
 		left = Math.abs(!!this.countdown * this.duration - now);
 	
 	return left;
