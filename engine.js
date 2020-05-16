@@ -226,7 +226,6 @@ let Game = {
 let KeyHandler = {
 
 	_pressed:  [],
-	_map:      [],
 
 	_special:  {
 
