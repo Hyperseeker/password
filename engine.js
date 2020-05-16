@@ -245,7 +245,7 @@ let ActionHandler = {
 
 	},
 
-	swipeup () {
+	swipeup    () {
 
 		let action = {
 
@@ -261,13 +261,13 @@ let ActionHandler = {
 
 	},
 
-	swipedown () {
+	swipedown  () {
 
 		if (Game.status == "ongoing") Game.pause();
 
 	},
 
-	keydown (event) {
+	keydown   (event) {
 
 		let key     = event.key,
 			hotkeys = handler.registry.keydown.map(response => response.condition && response.condition.key && response.condition.key),
@@ -305,7 +305,7 @@ let ActionHandler = {
 
 	},
 
-	keyup   (event) {
+	keyup      (event) {
 
 		let key  = event.key,
 			cell = Password.current.find(cell => cell.key == key);
