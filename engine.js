@@ -140,8 +140,6 @@ let Game = {
 
 		KeyHandler._pressed = [];
 
-		Game.status = "ongoing";
-
 		Password.generate[Password.type]();
 
 		DOMNegotiator.reset();
@@ -151,14 +149,16 @@ let Game = {
 		Game.timer.time.base
 					? Game.timer.restart()
 					: Game.timer.start(Game.difficulty.time.ms());
+	
+		Game.status = "ongoing";
 
 	},
 
 	lose       () {
 
-		Game.status = "lost";
-
 		$playfield.classList.add("failed");
+
+		Game.status = "lost";
 
 	},
 
@@ -184,21 +184,21 @@ let Game = {
 
 	pause      () {
 
-		Game.status = "paused";
-
 		Game.timer.pause();
 
 		$playfield.classList.add("paused");
+
+		Game.status = "paused";
 
 	},
 
 	unpause    () {
 
-		Game.status = "ongoing";
-
 		Game.timer.unpause();
 
 		$playfield.classList.remove("paused");
+
+		Game.status = "ongoing";
 
 	},
 
