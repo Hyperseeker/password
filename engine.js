@@ -11,8 +11,10 @@ let $playfield = document.querySelector(".playfield"),
 let Password = {
 
 	current: [],
+	
+	elements: [...document.querySelectorAll("main kbd")],
 
-	type: isMobile(navigator).any ? "order" : "keyboard",
+	type: isMobile(navigator).any,
 
 	alphabet: [
 
@@ -24,33 +26,25 @@ let Password = {
 	],
 
 	solved () { return Password.current.every(cell => cell.solved) },
-
-	generate: {
-
-		keyboard () {
-
-			let used = Password.alphabet
-									.slice(0, Game.difficulty.length)
-									.shuffle(),
-
-				cells = [...document.querySelectorAll("main kbd")];
-
-			Password.current = used.map((key, index) => { return {
+	
+	generate () {
+		
+		let keys = Password.type 
+							? Array.through(Game.difficulty.length, 1).shuffle() 
+							: Password.alphabet.shuffle().slice(0, Game.difficulty.length);
+							
+		Password.current = keys.map((key, index) => {
+			
+			return {
 
 				key,
-				element: cells[index],
+				element: Password.elements[index],
 				solved:  false
 
-			} });
-
-		},
-
-		order () {
-
-			Password.current = Array.through(Game.difficulty.length, 1).shuffle();
-
-		}
-
+			}
+		
+		});
+		
 	}
 
 };
@@ -141,7 +135,7 @@ let Game = {
 
 		ActionHandler._pressed = [];
 
-		Password.generate[Password.type]();
+		Password.generate();
 
 		DOMNegotiator.reset();
 
