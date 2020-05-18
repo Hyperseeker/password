@@ -321,7 +321,7 @@ let ActionHandler = {
 	
 	pointerdown (event) {
 		
-		if (!Password.type) return;
+		if (Password.type == false || Game.status != "ongoing") return;
 		
 		let target   = event.target,
 			key      = target.textContent,
@@ -349,7 +349,7 @@ let ActionHandler = {
 	
 	pointerup  (event) {
 		
-		if (!Password.type) return;
+		if (Password.type == false || Game.status != "ongoing") return;
 		
 		let target   = event.target,
 			key      = target.textContent,
