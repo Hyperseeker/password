@@ -130,6 +130,8 @@ let Game = {
 			separator: " "
 		
 		});
+		
+		if (mobile) document.body.classList.add("mobile");
 
 	},
 
