@@ -163,9 +163,9 @@ let Game = {
 
 	succeed    () {
 
-		let score = Game.difficulty.length / Game.difficulty.time * 20;
+		let reward = Game.difficulty.length / Game.difficulty.time * 20;
 
-		Game.score.add(score);
+		Game.score.add(reward);
 
 		Game.resolve();
 
