@@ -32,7 +32,7 @@ let Password = {
 	generate () {
 		
 		let keys = Password.type 
-							? Array.through(Game.difficulty.length, 1).shuffle() 
+							? Array.through(Game.difficulty.length, 1).map(key => key.toString()).shuffle() 
 							: Password.alphabet.shuffle().slice(0, Game.difficulty.length);
 							
 		Password.current = keys.map((key, index) => {
