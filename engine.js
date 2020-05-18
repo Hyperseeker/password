@@ -270,7 +270,7 @@ let ActionHandler = {
 
 		let key     = event.key.toLowerCase(),
 			hotkeys = handler.registry.keydown.map(response => response.condition && response.condition.key && response.condition.key),
-			isHotkey = key.belongsTo(hotkeys) || InteractionHandler.getAliasForKey(key).belongsTo(hotkeys);
+			isHotkey = InteractionHandler.getAliasForKey(key).belongsTo(hotkeys) || key.belongsTo(hotkeys);
 		
 		if (isHotkey) return;
 
