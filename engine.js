@@ -210,7 +210,7 @@ let Game = {
 
 		$playfield.classList.add("foul");
 
-		window.setTimeout(() => $playfield.classList.remove("foul"), 125);
+		setTimeout(() => $playfield.classList.remove("foul"), 125);
 
 	},
 
