@@ -253,7 +253,7 @@ let ActionHandler = {
 			"paused":  Game.unpause
 
 		};
-
+		
 		action[Game.status]();
 
 	},
@@ -265,6 +265,7 @@ let ActionHandler = {
 	},
 
 	keydown    (event) {
+		
 
 		let key     = event.key.toLowerCase(),
 			hotkeys = handler.registry.keydown.map(response => response.condition && response.condition.key && response.condition.key),
@@ -399,7 +400,7 @@ let DOMNegotiator = {
 	},
 
 	negotiate (cell) {
-
+		
 		let pressed = cell.key.belongsTo(ActionHandler._pressed);
 
 		if (pressed) {
