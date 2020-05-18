@@ -317,6 +317,61 @@ let ActionHandler = {
 		
 		};
 
+	},
+	
+	pointerdown (event) {
+		
+		if (!Password.type) return;
+		
+		let target   = event.target,
+			key      = target.textContent,
+			
+			cell     = Password.current.find(cell => cell.key == key),
+			previous = Password.current.find(cell => cell.key == key.pipe(parseInt) - 1);
+			
+		if (previous.solved) {
+			
+			cell.solved = true;
+			
+			if (Password.solved()) Game.succeed();
+			
+		} else {
+			
+			Game.foul();
+			
+		};
+		
+		ActionHandler._pressed.last = key;
+
+		DOMNegotiator.negotiate(cell);
+		
+	},
+	
+	pointerup  (event) {
+		
+		if (!Password.type) return;
+		
+		let target   = event.target,
+			key      = target.textContent,
+			
+			cell     = Password.current.find(cell => cell.key == key);
+			
+		if (previous.solved) {
+			
+			cell.solved = true;
+			
+			if (Password.solved()) Game.succeed();
+			
+		} else {
+			
+			Game.foul();
+			
+		};
+		
+		ActionHandler._pressed.last = key;
+
+		DOMNegotiator.negotiate(cell);
+		
 	}
 
 };
