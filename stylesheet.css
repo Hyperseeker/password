@@ -220,7 +220,7 @@ kbd.hotkey {
 .start .title {
 
 	font-family:  monospace;
-	font-size:    10em;
+	font-size:    calc(12vw + 1.5em);
 	text-indent: -0.1ch;
 
 }
