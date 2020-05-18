@@ -240,7 +240,7 @@ kbd.hotkey {
 	width:  100%;
 	height: 1.125vh;
 
-	border-radius: 0.125em;
+	border-radius: 0.175em;
 
 	background-color: var(--timer);
 
