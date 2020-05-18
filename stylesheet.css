@@ -235,7 +235,7 @@ kbd.hotkey {
 
 .playfield header { margin-block-start: -1.5em; }
 
-.playfield header .timer {
+.playfield .timer {
 
 	width:  100%;
 	height: 1.125vh;
@@ -248,7 +248,7 @@ kbd.hotkey {
 
 }
 
-.playfield header .timer .countdown {
+.playfield .timer .countdown {
 
 	width:  100%;
 	height: 100%;
