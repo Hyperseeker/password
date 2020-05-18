@@ -114,6 +114,10 @@ article footer * {
 
 }
 
+body:not(.mobile) .mobile   { display: none !important; }
+
+.mobile article * .keyboard { display: none !important; }
+
 .break {
 	
 	display: none;
