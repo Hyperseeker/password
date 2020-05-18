@@ -4,7 +4,7 @@ let $playfield = document.querySelector(".playfield"),
 
 	$screen    = {
 
-		start: document.querySelector(".start")
+		menu: document.querySelector(".menu")
 
 	};
 	
@@ -179,7 +179,7 @@ let Game = {
 
 		Game.resolve();
 
-		$screen.start && $screen.start.classList.add("hidden");
+		$screen.menu && $screen.menu.classList.add("hidden");
 
 	},
 

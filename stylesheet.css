@@ -211,13 +211,13 @@ kbd.hotkey {
 
 /*  # SCREENS  */
 
-/*  # SCREENS :: Start  */
+/*  # SCREENS :: Main Menu  */
 
-.start { z-index: 100; }
+.menu { z-index: 100; }
 
-.start main { position: relative; }
+.menu main { position: relative; }
 
-.start .title {
+.menu .title {
 
 	font-family:  monospace;
 	font-size:    calc(12vw + 1.5em);
@@ -225,7 +225,7 @@ kbd.hotkey {
 
 }
 
-.start .tagline {
+.menu .tagline {
 
 	position: absolute;
 	top: 1em;
