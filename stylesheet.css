@@ -230,9 +230,16 @@ kbd.hotkey {
 }
 
 .menu .tagline {
+	
+	--offset: calc((2.5vh + 1.5em) * -1);
+	
+	/* * important for `.break.small` on mobile devices */
+	display: flex;
+	flex-direction: column;
 
 	position: absolute;
-	top: 1em;
+	
+	transform: translateY(var(--offset));
 
 }
 
