@@ -16,7 +16,7 @@
 	/*  Sizing  */
 
 	--padding:        2.5% 5%;
-	--cell-size:      2.5em;
+	--cell-size:      2em;
 
 }
 
@@ -91,7 +91,7 @@ article header {
 
 article header * + * { margin-block-start: 1em; }
 
-article footer * {
+article footer span {
 
 	font-size:   1.25em;
 
@@ -137,6 +137,9 @@ article main .shader {
 /*  # LAYOUT :: Cell  */
 
 kbd {
+	
+	--font-size-factor: 1.33;
+	--font-size: calc(var(--cell-size) * var(--font-size-factor));
 
 	display:         flex;
 	justify-content: center;
@@ -148,13 +151,13 @@ kbd {
 	min-height: var(--cell-size);
 
 	margin:    0.25em;
-	padding: 0 0.5em;
+	padding: 0 0.25em;
 
 	border: 3px solid currentColor;
 	border-radius: 0.175em;
 
 	font-family:    monospace;
-	font-size:      var(--cell-size);
+	font-size:      var(--font-size);
 	line-height:    1;
 	text-transform: uppercase;
 	color:          var(--theme);
@@ -190,10 +193,8 @@ kbd.solved  { color: var(--solved); }
 kbd.pressed { transform: scale(0.975); }
 
 kbd.hotkey {
-
-	min-height: calc(var(--cell-size) * 0.83);
-
-	font-size:  calc(var(--cell-size) * 0.58);
+	
+	--font-size-factor: 1;
 
 }
 
