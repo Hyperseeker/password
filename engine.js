@@ -7,6 +7,8 @@ let $playfield = document.querySelector(".playfield"),
 		start: document.querySelector(".start")
 
 	};
+	
+let mobile = isMobile().any;
 
 let Password = {
 
@@ -14,7 +16,7 @@ let Password = {
 	
 	elements: [...document.querySelectorAll("main kbd")],
 
-	type: isMobile(navigator).any,
+	type: mobile,
 
 	alphabet: [
 
