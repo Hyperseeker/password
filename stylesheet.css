@@ -229,6 +229,8 @@ kbd.hotkey {
 
 }
 
+.menu .start { display: flex; }
+
 /*  # SCREENS :: Playfield  */
 
 .playfield header { margin-block-start: -1.5em; }
