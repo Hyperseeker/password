@@ -276,29 +276,25 @@ let ActionHandler = {
 
 		let cell = Password.current.find(cell => cell.key == key);
 
-		if (Game.status == "ongoing") {
+		if (cell) {
 
-			if (cell) {
+			cell.solved = true;
 
-				cell.solved = true;
+			if (Password.solved()) {
 
-				if (Password.solved()) {
+				Game.succeed();
 
-					Game.succeed();
-
-					return;
-
-				};
-
-				ActionHandler._pressed.last = key;
-
-				DOMNegotiator.negotiate(cell);
-
-			} else {
-
-				Game.foul();
+				return;
 
 			};
+
+			ActionHandler._pressed.last = key;
+
+			DOMNegotiator.negotiate(cell);
+
+		} else {
+
+			Game.foul();
 
 		};
 
@@ -323,13 +319,18 @@ let ActionHandler = {
 		
 		if (Password.type == false || Game.status != "ongoing") return;
 		
-		let target   = event.target,
-			key      = target.textContent,
+		let target   = event.target;
+		
+		if (!target.matches("article main kbd")) return;
+		
+		let key      = target.textContent,
 			
 			cell     = Password.current.find(cell => cell.key == key),
-			previous = Password.current.find(cell => cell.key == key.pipe(parseInt) - 1);
+			previous = Password.current.find(cell => cell.key == key.pipe(parseInt) - 1),
 			
-		if (previous.solved) {
+			inOrder  = previous ? previous.solved : key == "1";
+			
+		if (cell && inOrder) {
 			
 			cell.solved = true;
 			
@@ -351,26 +352,21 @@ let ActionHandler = {
 		
 		if (Password.type == false || Game.status != "ongoing") return;
 		
-		let target   = event.target,
-			key      = target.textContent,
+		let target   = event.target;
+		
+		if (!target.matches("article main kbd")) return;
+		
+		let key      = target.textContent,
 			
 			cell     = Password.current.find(cell => cell.key == key);
 			
-		if (previous.solved) {
-			
-			cell.solved = true;
-			
-			if (Password.solved()) Game.succeed();
-			
-		} else {
-			
-			Game.foul();
-			
-		};
-		
-		ActionHandler._pressed.last = key;
+		if (cell) {
 
-		DOMNegotiator.negotiate(cell);
+			if (key.belongsTo(ActionHandler._pressed)) ActionHandler._pressed.remove(key);
+
+			DOMNegotiator.negotiate(cell);
+		
+		};
 		
 	}
 
@@ -441,3 +437,6 @@ handler.register("beforeunload",     null,    Game.save);
 
 handler.register("swipeup",          null,    ActionHandler.swipeup);
 handler.register("swipedown",        null,    ActionHandler.swipedown);
+
+handler.register("pointerdown",      null,    ActionHandler.pointerdown);
+handler.register("pointerup",        null,    ActionHandler.pointerup);
