@@ -266,6 +266,7 @@ let ActionHandler = {
 
 	keydown    (event) {
 		
+		if (Game.status != "ongoing") return;
 
 		let key     = event.key.toLowerCase(),
 			hotkeys = handler.registry.keydown.map(response => response.condition && response.condition.key && response.condition.key),
