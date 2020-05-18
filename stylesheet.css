@@ -27,6 +27,8 @@ body {
 
 	font-family: sans-serif;
 	color:       white;
+	
+	margin: 0;
 
 	-webkit-user-select: none;
 	-ms-user-select:     none;
