@@ -34,18 +34,14 @@ let Password = {
 		let keys = Password.type 
 							? Array.through(Game.difficulty.length, 1).map(key => key.toString()).shuffle() 
 							: Password.alphabet.shuffle().slice(0, Game.difficulty.length);
-							
-		Password.current = keys.map((key, index) => {
-			
-			return {
-
-				key,
-				element: Password.elements[index],
-				solved:  false
-
-			}
 		
-		});
+		Password.current = keys.map((key, index) => [
+			
+			["key",     key], 
+			["element", Password.elements[index]],
+			["solved",  false]
+			
+		].pipe(Object.fromEntries));
 		
 	}
 
