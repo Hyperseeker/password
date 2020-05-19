@@ -56,7 +56,7 @@ let Game = {
 	status: "initial",
 
 	timer: null,
-
+	
 	difficulty: {
 
 		time:   5,
