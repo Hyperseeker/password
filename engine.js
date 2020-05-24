@@ -372,13 +372,12 @@ let ActionHandler = {
 		
 		if (Password.type == false || Game.status != "ongoing") return;
 		
-		let target   = event.target;
+		let target = event.target;
 		
 		if (!target.matches("article main kbd")) return;
 		
-		let key      = target.textContent,
-			
-			cell     = Password.current.find(cell => cell.key == key);
+		let key  = target.textContent,
+			cell = Password.current.find(cell => cell.key == key);
 			
 		if (cell) {
 			
