@@ -291,6 +291,8 @@ let ActionHandler = {
 		let cell = Password.current.find(cell => cell.key == key);
 
 		if (cell) {
+			
+			let element = cell.element;
 
 			cell.solved = true;
 
@@ -301,8 +303,8 @@ let ActionHandler = {
 				return;
 
 			};
-
-			ActionHandler._pressed.last = key;
+			
+			ActionHandler._pressed.last = element;
 
 			DOMNegotiator.negotiate(cell);
 
@@ -320,8 +322,12 @@ let ActionHandler = {
 			cell = Password.current.find(cell => cell.key == key);
 
 		if (cell) {
+			
+			if (!ActionHandler._pressed.length) return;
+			
+			let element = cell.element;
 
-			if (key.belongsTo(ActionHandler._pressed)) ActionHandler._pressed.remove(key);
+			if (element.belongsTo(ActionHandler._pressed)) ActionHandler._pressed.remove(element);
 
 			DOMNegotiator.negotiate(cell);
 		
@@ -356,7 +362,7 @@ let ActionHandler = {
 			
 		};
 		
-		ActionHandler._pressed.last = key;
+		ActionHandler._pressed.last = cell.element;
 
 		DOMNegotiator.negotiate(cell);
 		
@@ -375,8 +381,12 @@ let ActionHandler = {
 			cell     = Password.current.find(cell => cell.key == key);
 			
 		if (cell) {
+			
+			if (!ActionHandler._pressed.length) return;
+			
+			let element = cell.element;
 
-			if (key.belongsTo(ActionHandler._pressed)) ActionHandler._pressed.remove(key);
+			if (element.belongsTo(ActionHandler._pressed)) ActionHandler._pressed.remove(element);
 
 			DOMNegotiator.negotiate(cell);
 		
@@ -412,19 +422,20 @@ let DOMNegotiator = {
 
 	negotiate (cell) {
 		
-		let pressed = cell.key.belongsTo(ActionHandler._pressed);
+		let element = cell.element,
+			pressed = element.belongsTo(ActionHandler._pressed);
 
 		if (pressed) {
 
-			cell.element.classList.add("pressed");
+			element.classList.add("pressed");
 
 			cell.solved
-				? cell.element.classList.add("solved")
-				: cell.element.classList.remove("solved");
+				? element.classList.add("solved")
+				: element.classList.remove("solved");
 
 		} else {
 
-			cell.element.classList.remove("pressed");
+			element.classList.remove("pressed");
 
 		};
 
