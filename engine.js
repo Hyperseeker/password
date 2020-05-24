@@ -108,24 +108,42 @@ let Game = {
 	},
 
 	initialize () {
-
-		Game.timer = new Tock({
-
-			countdown: true,
-			interval:  16,
-
-			callback: Game.tick,
-			complete: Game.lose
-
-		});
-
-		Game.score.countup = new CountUp($score, 0, {
-			
-			duration: 1,
-			
-			separator: " "
 		
-		});
+		let root = document.documentElement;
+		
+		let options = {
+			
+			tock: {
+
+				countdown: true,
+				interval:  16,
+	
+				callback: Game.tick,
+				complete: Game.lose
+	
+			},
+			
+			countup: {
+			
+				duration: 1,
+				
+				separator: ""
+			
+			},
+			
+			fitty: {
+				
+				maxSize: mobile ? Math.max(root.clientWidth, root.clientHeight) * 0.9 : 22 * 16
+				
+			}
+			
+		};
+
+		Game.timer = new Tock(options.tock);
+
+		Game.countup = new CountUp($score, Game.score.current, options.countup);
+		
+		Game.fitty = fitty($score, options.fitty);
 		
 		if (mobile) document.body.classList.add("mobile");
 
