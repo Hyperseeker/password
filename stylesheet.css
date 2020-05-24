@@ -294,7 +294,7 @@ kbd.hotkey {
 
 	opacity: 0;
 
-	transition: opacity 0.5s;
+	transition: opacity 0.5s, font-size 0.5s;
 
 	z-index: 10;
 
