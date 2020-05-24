@@ -1,206 +1,320 @@
 class CountUp {
-    constructor(target, endVal, options) {
-        var _this = this;
-        this.target = target;
-        this.endVal = endVal;
-        this.options = options;
-        this.version = '2.0.4';
-        this.defaults = {
+    
+    constructor (target, endVal, options) {
+        
+        let instance = this;
+        
+        instance.target = target;
+        instance.endVal = endVal;
+        instance.options = options;
+        instance.version = '2.0.4';
+        
+        instance.defaults = {
+            
             startVal: 0,
+            
             decimalPlaces: 0,
+            
             duration: 2,
-            useEasing: true,
-            useGrouping: true,
+            
+            easing: true,
+            grouping: true,
+            
             smartEasingThreshold: 999,
             smartEasingAmount: 333,
+            
             separator: ',',
             decimal: '.',
+            
             prefix: '',
             suffix: ''
+            
         };
-        this.finalEndVal = null; // for smart easing
-        this.useEasing = true;
-        this.countDown = false;
-        this.error = '';
-        this.startVal = 0;
-        this.paused = true;
-        this.count = function (timestamp) {
-            if (!_this.startTime) {
-                _this.startTime = timestamp;
-            }
-            var progress = timestamp - _this.startTime;
-            _this.remaining = _this.duration - progress;
+        
+        instance.finalEndVal = null; // for smart easing
+        instance.easing = true;
+        instance.countDown = false;
+        instance.error = '';
+        instance.startVal = 0;
+        instance.paused = true;
+        
+        instance.count = function (timestamp) {
+            
+            if (!instance.startTime) instance.startTime = timestamp;
+            
+            var progress = timestamp - instance.startTime;
+            
+            instance.remaining = instance.duration - progress;
+            
             // to ease or not to ease
-            if (_this.useEasing) {
-                if (_this.countDown) {
-                    _this.frameVal = _this.startVal - _this.easingFn(progress, 0, _this.startVal - _this.endVal, _this.duration);
+            if (instance.easing) {
+                
+                if (instance.countDown) {
+                    
+                    instance.frameVal = instance.startVal - instance.easingFn(progress, 0, instance.startVal - instance.endVal, instance.duration);
+                    
+                } else {
+                    
+                    instance.frameVal = instance.easingFn(progress, instance.startVal, instance.endVal - instance.startVal, instance.duration);
+                    
                 }
-                else {
-                    _this.frameVal = _this.easingFn(progress, _this.startVal, _this.endVal - _this.startVal, _this.duration);
+                
+            } else {
+                
+                if (instance.countDown) {
+                    
+                    instance.frameVal = instance.startVal - ((instance.startVal - instance.endVal) * (progress / instance.duration));
+                    
+                } else {
+                    
+                    instance.frameVal = instance.startVal + (instance.endVal - instance.startVal) * (progress / instance.duration);
+                    
                 }
-            }
-            else {
-                if (_this.countDown) {
-                    _this.frameVal = _this.startVal - ((_this.startVal - _this.endVal) * (progress / _this.duration));
-                }
-                else {
-                    _this.frameVal = _this.startVal + (_this.endVal - _this.startVal) * (progress / _this.duration);
-                }
-            }
+                
+            };
+            
             // don't go past endVal since progress can exceed duration in the last frame
-            if (_this.countDown) {
-                _this.frameVal = (_this.frameVal < _this.endVal) ? _this.endVal : _this.frameVal;
-            }
-            else {
-                _this.frameVal = (_this.frameVal > _this.endVal) ? _this.endVal : _this.frameVal;
-            }
+            if (instance.countDown) {
+                
+                instance.frameVal = (instance.frameVal < instance.endVal) ? instance.endVal : instance.frameVal;
+                
+            } else {
+                
+                instance.frameVal = (instance.frameVal > instance.endVal) ? instance.endVal : instance.frameVal;
+                
+            };
+            
             // decimal
-            _this.frameVal = Math.round(_this.frameVal * _this.decimalMult) / _this.decimalMult;
+            instance.frameVal = Math.round(instance.frameVal * instance.decimalMult) / instance.decimalMult;
+            
             // format and print value
-            _this.printValue(_this.frameVal);
+            instance.printValue(instance.frameVal);
+            
             // whether to continue
-            if (progress < _this.duration) {
-                _this.rAF = requestAnimationFrame(_this.count);
-            }
-            else if (_this.finalEndVal !== null) {
+            if (progress < instance.duration) {
+                
+                instance.rAF = requestAnimationFrame(instance.count);
+                
+            } else if (instance.finalEndVal !== null) {
+                
                 // smart easing
-                _this.update(_this.finalEndVal);
-            }
-            else {
-                if (_this.callback) {
-                    _this.callback();
-                }
-            }
+                instance.update(instance.finalEndVal);
+                
+            } else if (instance.callback) {
+                
+                instance.callback();
+                
+            };
+            
         };
+        
         // default format and easing functions
-        this.formatNumber = function (num) {
-            var neg = (num < 0) ? '-' : '';
-            var result, x, x1, x2, x3;
-            result = Math.abs(num).toFixed(_this.options.decimalPlaces);
-            result += '';
-            x = result.split('.');
-            x1 = x[0];
-            x2 = x.length > 1 ? _this.options.decimal + x[1] : '';
-            if (_this.options.useGrouping) {
+        instance.formatNumber = function (num) {
+            
+            var neg = num < 0 ? '-' : '';
+            
+            let x3;
+            
+            let result = Math.abs(num).toFixed(instance.options.decimalPlaces).toString();
+            // result += '';
+            
+            let x = result.split('.');
+            
+            let x1 = x[0];
+            
+            let x2 = x.length > 1 ? instance.options.decimal + x[1] : '';
+            
+            if (instance.options.grouping) {
+                
                 x3 = '';
+                
                 for (var i = 0, len = x1.length; i < len; ++i) {
-                    if (i !== 0 && (i % 3) === 0) {
-                        x3 = _this.options.separator + x3;
-                    }
+                    
+                    if (i !== 0 && (i % 3) === 0) x3 = instance.options.separator + x3;
+                    
                     x3 = x1[len - i - 1] + x3;
+                    
                 }
+                
                 x1 = x3;
-            }
+                
+            };
+            
             // optional numeral substitution
-            if (_this.options.numerals && _this.options.numerals.length) {
-                x1 = x1.replace(/[0-9]/g, function (w) { return _this.options.numerals[+w]; });
-                x2 = x2.replace(/[0-9]/g, function (w) { return _this.options.numerals[+w]; });
-            }
-            return neg + _this.options.prefix + x1 + x2 + _this.options.suffix;
+            if (instance.options.numerals && instance.options.numerals.length) {
+                
+                x1 = x1.replace(/[0-9]/g, function (w) { return instance.options.numerals[+w]; });
+                x2 = x2.replace(/[0-9]/g, function (w) { return instance.options.numerals[+w]; });
+                
+            };
+            
+            return neg + instance.options.prefix + x1 + x2 + instance.options.suffix;
+            
         };
-        this.easeOutExpo = function (t, b, c, d) {
+        
+        instance.easeOutExpo = function (t, b, c, d) {
             return c * (-Math.pow(2, -10 * t / d) + 1) * 1024 / 1023 + b;
         };
-        this.options = __assign({}, this.defaults, options);
-        this.formattingFn = (this.options.formattingFn) ?
-            this.options.formattingFn : this.formatNumber;
-        this.easingFn = (this.options.easingFn) ?
-            this.options.easingFn : this.easeOutExpo;
-        this.startVal = this.validateValue(this.options.startVal);
-        this.frameVal = this.startVal;
-        this.endVal = this.validateValue(endVal);
-        this.options.decimalPlaces = Math.max(0 || this.options.decimalPlaces);
-        this.decimalMult = Math.pow(10, this.options.decimalPlaces);
-        this.resetDuration();
-        this.options.separator = String(this.options.separator);
-        this.useEasing = this.options.useEasing;
-        if (this.options.separator === '') {
-            this.options.useGrouping = false;
-        }
-        this.el = (typeof target === 'string') ? document.getElementById(target) : target;
-        if (this.el) {
-            this.printValue(this.startVal);
-        }
-        else {
-            this.error = '[CountUp] target is null or undefined';
-        }
-    }
+        
+        instance.options = Object.assign({}, instance.defaults, options);
+        
+        instance.formattingFn = instance.options.formattingFn
+                                                ? instance.options.formattingFn
+                                                : instance.formatNumber;
+                                                
+        instance.easingFn = instance.options.easingFn
+                                        ? instance.options.easingFn 
+                                        : instance.easeOutExpo;
+                                        
+        instance.startVal = instance.validateValue(instance.options.startVal);
+        instance.frameVal = instance.startVal;
+        instance.endVal = instance.validateValue(endVal);
+        
+        instance.options.decimalPlaces = Math.max(0, instance.options.decimalPlaces);
+        
+        instance.decimalMult = Math.pow(10, instance.options.decimalPlaces);
+        
+        instance.resetDuration();
+        
+        instance.options.separator = String(instance.options.separator);
+        
+        instance.easing = instance.options.easing;
+        
+        if (instance.options.separator === '') instance.options.grouping = false;
+        
+        instance.el = typeof target === 'string'
+                                        ? document.getElementById(target) 
+                                        : target;
+        
+        if (instance.el) {
+            
+            instance.printValue(instance.startVal);
+            
+        } else {
+            
+            instance.error = '[CountUp] target is null or undefined';
+            
+        };
+        
+    };
+    
     // determines where easing starts and whether to count down or up
-    determineDirectionAndSmartEasing() {
-        var end = (this.finalEndVal) ? this.finalEndVal : this.endVal;
-        this.countDown = (this.startVal > end);
+    determineDirectionAndSmartEasing () {
+        
+        var end = this.finalEndVal 
+                                ? this.finalEndVal 
+                                : this.endVal;
+        
+        this.countDown = this.startVal > end;
+        
         var animateAmount = end - this.startVal;
+        
         if (Math.abs(animateAmount) > this.options.smartEasingThreshold) {
+            
             this.finalEndVal = end;
-            var up = (this.countDown) ? 1 : -1;
+            
+            var up = this.countDown
+                                ?  1 
+                                : -1;
+                                
             this.endVal = end + (up * this.options.smartEasingAmount);
+            
             this.duration = this.duration / 2;
-        }
-        else {
+            
+        } else {
+            
             this.endVal = end;
             this.finalEndVal = null;
-        }
+            
+        };
+        
         if (this.finalEndVal) {
-            this.useEasing = false;
-        }
-        else {
-            this.useEasing = this.options.useEasing;
-        }
-    }
+            
+            this.easing = false;
+            
+        } else {
+            
+            this.easing = this.options.easing;
+            
+        };
+        
+    };
+    
     // start animation
-    start(callback) {
-        if (this.error) {
-            return;
-        }
+    start (callback) {
+        
+        if (this.error) return;
+        
         this.callback = callback;
+        
         if (this.duration > 0) {
+            
             this.determineDirectionAndSmartEasing();
             this.paused = false;
             this.rAF = requestAnimationFrame(this.count);
-        }
-        else {
+            
+        } else {
+            
             this.printValue(this.endVal);
+            
         }
     }
     // pause/resume animation
-    pauseResume() {
+    pauseResume () {
+        
         if (!this.paused) {
+            
             cancelAnimationFrame(this.rAF);
-        }
-        else {
+            
+        } else {
+            
             this.startTime = null;
             this.duration = this.remaining;
             this.startVal = this.frameVal;
+            
             this.determineDirectionAndSmartEasing();
+            
             this.rAF = requestAnimationFrame(this.count);
-        }
+            
+        };
+        
         this.paused = !this.paused;
     }
     // reset to startVal so animation can be run again
-    reset() {
+    reset () {
+        
         cancelAnimationFrame(this.rAF);
+        
         this.paused = true;
         this.resetDuration();
         this.startVal = this.validateValue(this.options.startVal);
         this.frameVal = this.startVal;
         this.printValue(this.startVal);
-    }
+        
+    };
+    
     // pass a new endVal and start animation
-    update(newEndVal) {
+    update (newEndVal) {
+        
         cancelAnimationFrame(this.rAF);
+        
         this.startTime = null;
         this.endVal = this.validateValue(newEndVal);
-        if (this.endVal === this.frameVal) {
-            return;
-        }
+        
+        if (this.endVal === this.frameVal) return;
+        
         this.startVal = this.frameVal;
-        if (!this.finalEndVal) {
-            this.resetDuration();
-        }
+        
+        if (!this.finalEndVal) this.resetDuration();
+        
         this.determineDirectionAndSmartEasing();
+        
         this.rAF = requestAnimationFrame(this.count);
-    }
-    printValue(val) {
+        
+    };
+    
+    printValue (val) {
+        
         var result = this.formattingFn(val);
         if (this.el.tagName === 'INPUT') {
             var input = this.el;
@@ -213,23 +327,33 @@ class CountUp {
             this.el.innerHTML = result;
         }
     }
-    ensureNumber(n) {
-        return (typeof n === 'number' && !isNaN(n));
-    }
-    validateValue(value) {
+    
+    ensureNumber (number) { return !Number.isNaN(number) };
+    
+    validateValue (value) {
+        
         var newValue = Number(value);
+        
         if (!this.ensureNumber(newValue)) {
+            
             this.error = "[CountUp] invalid start or end value: " + value;
+            
             return null;
-        }
-        else {
+            
+        } else {
+            
             return newValue;
         }
-    }
-    resetDuration() {
+    };
+    
+    resetDuration () {
+        
         this.startTime = null;
+        
         this.duration = Number(this.options.duration) * 1000;
+        
         this.remaining = this.duration;
-    }
+        
+    };
 
 }
