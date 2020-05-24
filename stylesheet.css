@@ -68,6 +68,8 @@ article {
 	padding: var(--padding);
 
 	background-color: var(--background);
+	
+	overflow: hidden;
 
 }
 
