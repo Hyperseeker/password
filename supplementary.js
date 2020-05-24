@@ -46,7 +46,9 @@ Array.through = function (length = 0, from = 0, step = 1) {
 
 };
 
-String.prototype.belongsTo = function (array) { return array.includes(this.valueOf()) };
+// String.prototype.belongsTo = function (array) { return array.includes(this.valueOf()) };
+
+Object.prototype.belongsTo = function (array) { return array.includes(this.valueOf()) };
 
 Number.prototype.ms = function () { return this * 1000 };
 

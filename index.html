@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+	
 <head>
 
 	<meta charset="UTF-8">
@@ -12,41 +13,24 @@
 	<script src="libs/isMobile.min.js"></script>
 
 </head>
+
 <body>
 
-	<article class="start">
+	<article class="menu">
 
 		<header></header>
 
 		<main>
 
 			<div class="title">password</div>
-			<div class="tagline">a game about key presses and reaction time</div>
+			<div class="tagline">a game about <div class="break small"></div>key presses and reaction time</div>
 
 		</main>
 
 		<footer>
 
-			<span class="start">Press <kbd class="hotkey">Space</kbd> to start</span>
-
-		</footer>
-		
-	</article>
-
-	<article class="settings hidden">
-
-		<header></header>
-
-		<main>
-
-			<div class="title">password</div>
-			<div class="tagline">a game about key presses and reaction time</div>
-
-		</main>
-
-		<footer>
-
-			Press <kbd class="hotkey">Space</kbd> to start
+			<span class="start keyboard">Press <kbd class="hotkey">Space</kbd> to start</span>
+			<span class="start mobile">Swipe up to start</span>
 
 		</footer>
 		
@@ -92,23 +76,26 @@
 	
 		<footer>
 	
-			<span class="startover">Press <kbd class="hotkey">Space</kbd> to start over</span>
+			<span class="startover keyboard">Press <kbd class="hotkey">Space</kbd> to start over</span>
+			<span class="startover mobile">Swipe up to start over</span>
 
-			<span class="pause">Press <kbd class="hotkey">Space</kbd> to pause</span>
+			<span class="pause keyboard">Press <kbd class="hotkey">Space</kbd> to pause</span>
+			<span class="pause mobile">Swipe down to pause</span>
 
-			<span class="unpause">Press <kbd class="hotkey">Space</kbd> to unpause</span>
+			<span class="unpause keyboard">Press <kbd class="hotkey">Space</kbd> to unpause</span>
+			<span class="unpause mobile">Swipe up to unpause</span>
 	
 		</footer>
 
 	</article>
 
-	<script src="libs/supplementary.js"></script>
-
 	<script src="libs/tock.js"></script>
 	<script src="libs/countup.js"></script>
+	<script src="libs/fitty.min.js"></script>
 	<script src="libs/tinygesture.js"></script>
 	<script src="libs/InteractionHandler.js"></script>
 
+	<script src="supplementary.js"></script>
 	<script src="engine.js"></script>
 	
 </body>

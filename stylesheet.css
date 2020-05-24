@@ -1,20 +1,3 @@
-/*  # FONTS  */
-
-@font-face {
-
-    font-family: 'Inter';
-    
-    src: local('Inter'),
-		 local('Inter Regular'), local('Inter-Regular'),
-         url('fonts/Inter/subset-Inter-Regular.woff2') format('woff2'),
-         url('fonts/Inter/subset-Inter-Regular.woff') format('woff');
-         
-    font-weight: normal;
-    font-style: normal;
-    
-}
-
-
 /*  # VARIABLES  */
 
 :root {
@@ -33,7 +16,7 @@
 	/*  Sizing  */
 
 	--padding:        2.5% 5%;
-	--cell-size:      2.5em;
+	--cell-size:      2em;
 
 }
 
@@ -42,9 +25,11 @@
 
 body {
 
-	font-family: "Inter", "Helvetica Now", "Helvetica Neue", "Helvetica", sans-serif;
-	color: white;
-
+	font-family: sans-serif;
+	color:       white;
+	
+	margin: 0;
+	
 	-webkit-user-select: none;
 	-ms-user-select:     none;
 	user-select:         none;
@@ -83,6 +68,8 @@ article {
 	padding: var(--padding);
 
 	background-color: var(--background);
+	
+	overflow: hidden;
 
 }
 
@@ -106,13 +93,17 @@ article header {
 
 article header * + * { margin-block-start: 1em; }
 
-article footer * {
+article footer span {
 
 	font-size:   1.25em;
 
 	transition:  0.33s all;
 
 }
+
+body:not(.mobile) .mobile   { display: none !important; }
+
+.mobile article * .keyboard { display: none !important; }
 
 .break {
 	
@@ -148,6 +139,9 @@ article main .shader {
 /*  # LAYOUT :: Cell  */
 
 kbd {
+	
+	--font-size-factor: 1.33;
+	--font-size: calc(var(--cell-size) * var(--font-size-factor));
 
 	display:         flex;
 	justify-content: center;
@@ -159,13 +153,13 @@ kbd {
 	min-height: var(--cell-size);
 
 	margin:    0.25em;
-	padding: 0 0.5em;
+	padding: 0 0.25em;
 
-	border: 3px solid currentColor;
+	border:      solid 3px;
 	border-radius: 0.175em;
 
 	font-family:    monospace;
-	font-size:      var(--cell-size);
+	font-size:      var(--font-size);
 	line-height:    1;
 	text-transform: uppercase;
 	color:          var(--theme);
@@ -201,47 +195,54 @@ kbd.solved  { color: var(--solved); }
 kbd.pressed { transform: scale(0.975); }
 
 kbd.hotkey {
-
-	min-height: calc(var(--cell-size) * 0.83);
-
-	font-size:  calc(var(--cell-size) * 0.58);
+	
+	--font-size-factor: 1;
 
 }
 
 
 /*  # SCREENS  */
 
-/*  # SCREENS :: Start  */
+/*  # SCREENS :: Main Menu  */
 
-.start { z-index: 100; }
+.menu { z-index: 100; }
 
-.start main { position: relative; }
+.menu main { position: relative; }
 
-.start .title {
+.menu .title {
 
 	font-family:  monospace;
-	font-size:    10em;
+	font-size:    calc(12vw + 1.5em);
 	text-indent: -0.1ch;
 
 }
 
-.start .tagline {
+.menu .tagline {
+	
+	--offset: calc((2.5vh + 1.5em) * -1);
+	
+	/* * important for `.break.small` on mobile devices */
+	display: flex;
+	flex-direction: column;
 
 	position: absolute;
-	top: 1em;
+	
+	transform: translateY(var(--offset));
 
 }
+
+.menu .start { display: flex; }
 
 /*  # SCREENS :: Playfield  */
 
 .playfield header { margin-block-start: -1.5em; }
 
-.playfield header .timer {
+.playfield .timer {
 
 	width:  100%;
 	height: 1.125vh;
 
-	border-radius: 0.125em;
+	border-radius: 0.175em;
 
 	background-color: var(--timer);
 
@@ -249,7 +250,7 @@ kbd.hotkey {
 
 }
 
-.playfield header .timer .countdown {
+.playfield .timer .countdown {
 
 	width:  100%;
 	height: 100%;
@@ -276,8 +277,6 @@ kbd.hotkey {
 
 	--shift: -0.05em;
 
-	width:    100%;
-
 	position: absolute;
 	top:      50%;
 	left:     50%;
@@ -295,7 +294,7 @@ kbd.hotkey {
 
 	opacity: 0;
 
-	transition: opacity 0.5s;
+	transition: opacity 0.5s, font-size 0.5s;
 
 	z-index: 10;
 

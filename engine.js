@@ -4,54 +4,45 @@ let $playfield = document.querySelector(".playfield"),
 
 	$screen    = {
 
-		start: document.querySelector(".start")
+		menu: document.querySelector(".menu")
 
 	};
+	
+let mobile = isMobile().any;
 
 let Password = {
 
 	current: [],
+	
+	elements: [...document.querySelectorAll("main kbd")],
 
-	type: isMobile(navigator).any ? "order" : "keyboard",
+	type: mobile,
 
 	alphabet: [
 
 		"0", "1", "2", "3", "4", "5", "6", "7",
-		"8", "9", "A", "B", "C", "D", "E", "F",
-		"G", "H", "J", "K", "M", "N", "P", "Q",
-		"R", "S", "T", "V", "W", "X", "Y", "Z"
+		"8", "9", "a", "b", "c", "d", "e", "f",
+		"g", "h", "j", "k", "m", "n", "p", "q",
+		"r", "s", "t", "v", "w", "x", "y", "z"
 
 	],
 
 	solved () { return Password.current.every(cell => cell.solved) },
-
-	generate: {
-
-		keyboard () {
-
-			let used = Password.alphabet
-									.map(key => key.toLowerCase())
-									.slice(0, Game.difficulty.length)
-									.shuffle(),
-
-				cells = [...document.querySelectorAll("main kbd")];
-
-			Password.current = used.map((key, index) => { return {
-
-				key,
-				element: cells[index],
-				solved:  false
-
-			} });
-
-		},
-
-		order () {
-
-			Password.current = Array.through(Game.difficulty.length, 1).shuffle();
-
-		}
-
+	
+	generate () {
+		
+		let keys = Password.type 
+							? Array.through(Game.difficulty.length, 1).map(key => key.toString()).shuffle() 
+							: Password.alphabet.shuffle().slice(0, Game.difficulty.length);
+		
+		Password.current = keys.map((key, index) => [
+			
+			["key",     key], 
+			["element", Password.elements[index]],
+			["solved",  false]
+			
+		].pipe(Object.fromEntries));
+		
 	}
 
 };
@@ -61,7 +52,9 @@ let Game = {
 	status: "initial",
 
 	timer: null,
-
+	
+	countup: null,
+	
 	difficulty: {
 
 		time:   5,
@@ -81,8 +74,6 @@ let Game = {
 		current: 0,
 
 		highest: 0,
-
-		countup: null,
 
 		add (value) {
 			
@@ -117,24 +108,44 @@ let Game = {
 	},
 
 	initialize () {
-
-		Game.timer = new Tock({
-
-			countdown: true,
-			interval:  16,
-
-			callback: Game.tick,
-			complete: Game.lose
-
-		});
-
-		Game.score.countup = new CountUp($score, 0, {
-			
-			duration: 1,
-			
-			separator: " "
 		
-		});
+		let root = document.documentElement;
+		
+		let options = {
+			
+			tock: {
+
+				countdown: true,
+				interval:  16,
+	
+				callback: Game.tick,
+				complete: Game.lose
+	
+			},
+			
+			countup: {
+			
+				duration: 1,
+				
+				separator: ""
+			
+			},
+			
+			fitty: {
+				
+				maxSize: mobile ? Math.max(root.clientWidth, root.clientHeight) * 0.9 : 22 * 16
+				
+			}
+			
+		};
+
+		Game.timer = new Tock(options.tock);
+
+		Game.countup = new CountUp($score, Game.score.current, options.countup);
+		
+		Game.fitty = fitty($score, options.fitty);
+		
+		if (mobile) document.body.classList.add("mobile");
 
 	},
 
@@ -142,7 +153,7 @@ let Game = {
 
 		ActionHandler._pressed = [];
 
-		Password.generate[Password.type]();
+		Password.generate();
 
 		DOMNegotiator.reset();
 
@@ -162,15 +173,13 @@ let Game = {
 
 		Game.status = "lost";
 
-		$main.classList.add("failed");
-
   },
 
 	succeed    () {
 
-		let score = Game.difficulty.length / Game.difficulty.time * 20;
+		let reward = Game.difficulty.length / Game.difficulty.time * 20;
 
-		Game.score.add(score);
+		Game.score.add(reward);
 
 		Game.resolve();
 
@@ -182,7 +191,7 @@ let Game = {
 
 		Game.resolve();
 
-		$screen.start && $screen.start.classList.add("hidden");
+		$screen.menu && $screen.menu.classList.add("hidden");
 
 	},
 
@@ -215,7 +224,7 @@ let Game = {
 
 		$playfield.classList.add("foul");
 
-		window.setTimeout(() => $playfield.classList.remove("foul"), 125);
+		setTimeout(() => $playfield.classList.remove("foul"), 125);
 
 	},
 
@@ -229,9 +238,9 @@ let Game = {
 
 let ActionHandler = {
 
-	_pressed:  [],
+	_pressed:   [],
 
-	contextual () {
+	contextual  () {
 
 		let action = {
 
@@ -247,7 +256,7 @@ let ActionHandler = {
 
 	},
 
-	swipeup    () {
+	swipeup     () {
 
 		let action = {
 
@@ -258,68 +267,130 @@ let ActionHandler = {
 			"paused":  Game.unpause
 
 		};
-
+		
 		action[Game.status]();
 
 	},
 
-	swipedown  () {
+	swipedown   () {
 
 		if (Game.status == "ongoing") Game.pause();
 
 	},
 
-	keydown   (event) {
+	keydown    (event) {
+		
+		if (Game.status != "ongoing") return;
 
-		let key     = event.key,
+		let key     = event.key.toLowerCase(),
 			hotkeys = handler.registry.keydown.map(response => response.condition && response.condition.key && response.condition.key),
-			isHotkey = key.belongsTo(hotkeys) || InteractionHandler.getAliasForKey(key).belongsTo(hotkeys);
+			isHotkey = InteractionHandler.getAliasForKey(key).belongsTo(hotkeys) || key.belongsTo(hotkeys);
 		
 		if (isHotkey) return;
 
 		let cell = Password.current.find(cell => cell.key == key);
 
-		if (Game.status == "ongoing") {
+		if (cell) {
+			
+			let element = cell.element;
 
-			if (cell) {
+			cell.solved = true;
 
-				cell.solved = true;
+			if (Password.solved()) {
 
-				if (Password.solved()) {
+				Game.succeed();
 
-					Game.succeed();
-
-					return;
-
-				};
-
-				ActionHandler._pressed.last = key;
-
-				DOMNegotiator.negotiate(cell);
-
-			} else {
-
-				Game.foul();
+				return;
 
 			};
+			
+			ActionHandler._pressed.last = element;
+
+			DOMNegotiator.negotiate(cell);
+
+		} else {
+
+			Game.foul();
 
 		};
 
 	},
 
-	keyup      (event) {
+	keyup       (event) {
 
 		let key  = event.key,
 			cell = Password.current.find(cell => cell.key == key);
 
 		if (cell) {
+			
+			if (!ActionHandler._pressed.length) return;
+			
+			let element = cell.element;
 
-			ActionHandler._pressed.remove(key);
+			if (element.belongsTo(ActionHandler._pressed)) ActionHandler._pressed.remove(element);
 
 			DOMNegotiator.negotiate(cell);
 		
 		};
 
+	},
+	
+	pointerdown (event) {
+		
+		if (Password.type == false || Game.status != "ongoing") return;
+		
+		let target   = event.target;
+		
+		if (!target.matches("article main kbd")) return;
+		
+		let key      = target.textContent,
+			
+			cell     = Password.current.find(cell => cell.key == key),
+			previous = Password.current.find(cell => cell.key == key.pipe(parseInt) - 1),
+			
+			inOrder  = previous ? previous.solved : key == "1";
+			
+		if (cell && inOrder) {
+			
+			cell.solved = true;
+			
+			if (Password.solved()) Game.succeed();
+			
+		} else {
+			
+			Game.foul();
+			
+		};
+		
+		ActionHandler._pressed.last = cell.element;
+
+		DOMNegotiator.negotiate(cell);
+		
+	},
+	
+	pointerup  (event) {
+		
+		if (Password.type == false || Game.status != "ongoing") return;
+		
+		let target = event.target;
+		
+		if (!target.matches("article main kbd")) return;
+		
+		let key  = target.textContent,
+			cell = Password.current.find(cell => cell.key == key);
+			
+		if (cell) {
+			
+			if (!ActionHandler._pressed.length) return;
+			
+			let element = cell.element;
+
+			if (element.belongsTo(ActionHandler._pressed)) ActionHandler._pressed.remove(element);
+
+			DOMNegotiator.negotiate(cell);
+		
+		};
+		
 	}
 
 };
@@ -344,25 +415,26 @@ let DOMNegotiator = {
 
 		if (Game.score.current) $score.classList.add("visible");
 
-		Game.score.countup.update(Game.score.current);
+		Game.countup.update(Game.score.current);
 
 	},
 
 	negotiate (cell) {
-
-		let pressed = cell.key.belongsTo(ActionHandler._pressed);
+		
+		let element = cell.element,
+			pressed = element.belongsTo(ActionHandler._pressed);
 
 		if (pressed) {
 
-			cell.element.classList.add("pressed");
+			element.classList.add("pressed");
 
 			cell.solved
-				? cell.element.classList.add("solved")
-				: cell.element.classList.remove("solved");
+				? element.classList.add("solved")
+				: element.classList.remove("solved");
 
 		} else {
 
-			cell.element.classList.remove("pressed");
+			element.classList.remove("pressed");
 
 		};
 
@@ -389,3 +461,6 @@ handler.register("beforeunload",     null,    Game.save);
 
 handler.register("swipeup",          null,    ActionHandler.swipeup);
 handler.register("swipedown",        null,    ActionHandler.swipedown);
+
+handler.register("pointerdown",      null,    ActionHandler.pointerdown);
+handler.register("pointerup",        null,    ActionHandler.pointerup);
