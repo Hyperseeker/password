@@ -53,6 +53,8 @@ let Game = {
 
 	timer: null,
 	
+	countup: null,
+	
 	difficulty: {
 
 		time:   5,
@@ -72,8 +74,6 @@ let Game = {
 		current: 0,
 
 		highest: 0,
-
-		countup: null,
 
 		add (value) {
 			
@@ -388,7 +388,7 @@ let DOMNegotiator = {
 
 		if (Game.score.current) $score.classList.add("visible");
 
-		Game.score.countup.update(Game.score.current);
+		Game.countup.update(Game.score.current);
 
 	},
 
